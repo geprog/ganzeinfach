@@ -1,0 +1,764 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Kiko: Deine erste eigene App mit KI</title>
+<meta name="description" content="Kiko zeigt dir Schritt für Schritt, wie du dir mit einer KI eine eigene kleine App bauen lässt. Ohne Vorwissen, ohne Anmeldung bei uns, ohne Tracking.">
+<link rel="canonical" href="https://ganzeinfach.geprog.com/kiko/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="GEPROG">
+<meta property="og:title" content="Kiko: Deine erste eigene App mit KI">
+<meta property="og:description" content="Kiko zeigt dir Schritt für Schritt, wie du dir mit einer KI eine eigene kleine App bauen lässt. Ohne Vorwissen, ohne Anmeldung bei uns, ohne Tracking.">
+<meta property="og:url" content="https://ganzeinfach.geprog.com/kiko/">
+<meta property="og:locale" content="de_DE">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kiko: Deine erste eigene App mit KI">
+<meta name="twitter:description" content="Kiko zeigt dir Schritt für Schritt, wie du dir mit einer KI eine eigene kleine App bauen lässt. Ohne Vorwissen, ohne Anmeldung bei uns, ohne Tracking.">
+<style>
+  :root{
+    --bg:#F1F5FB;
+    --surface:#FFFFFF;
+    --surface-2:#F5F8FD;
+    --ink:#16213A;
+    --muted:#55617F;
+    --line:#D9E2F0;
+    --accent:#4B4FD1;
+    --accent-soft:#E9EAFB;
+    --mint:#5ED3A8;
+    --mint-deep:#1E7C5E;
+    --mint-soft:#DDF6EC;
+    --coral-soft:#FFE5E0;
+    --sun:#FFD166;
+    --btn-bg:#16213A;
+    --btn-fg:#FFFFFF;
+    --shadow:0 1px 2px rgba(22,33,58,.06), 0 14px 40px rgba(22,33,58,.09);
+    --radius:26px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0E1526;
+      --surface:#17203A;
+      --surface-2:#1D2846;
+      --ink:#EAF0FF;
+      --muted:#A6B3D3;
+      --line:#2B3858;
+      --accent:#9EA3FF;
+      --accent-soft:#252C55;
+      --mint-deep:#5ED3A8;
+      --mint-soft:#173B36;
+      --coral-soft:#4A2A2E;
+      --btn-bg:#5ED3A8;
+      --btn-fg:#0E1526;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 14px 40px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;min-height:100vh;
+    font-family:ui-rounded,"SF Pro Rounded","Segoe UI",system-ui,-apple-system,sans-serif;
+    font-size:18px;line-height:1.55;color:var(--ink);background:var(--bg);
+  }
+  .wrap{max-width:780px;margin:0 auto;padding:22px 18px 56px}
+
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .brand{font-weight:800;font-size:1.15rem;letter-spacing:-.01em}
+  .hgroup{display:flex;align-items:center;gap:10px}
+  .hlink{font-weight:700;color:var(--muted);text-underline-offset:3px}
+  .tag{font-size:.8rem;font-weight:700;background:var(--accent-soft);color:var(--accent);border-radius:999px;padding:3px 12px}
+
+  /* Fortschritt */
+  .progress{margin:18px 0 22px}
+  .progress-label{font-size:.92rem;font-weight:700;color:var(--muted);margin-bottom:8px}
+  .segs{display:flex;gap:6px}
+  .seg{
+    flex:1;height:10px;border:0;padding:0;border-radius:6px;background:var(--line);
+    cursor:pointer;transition:background .2s ease, transform .15s ease;
+  }
+  .seg:disabled{cursor:default;opacity:.7}
+  .seg.done{background:var(--mint-deep)}
+  .seg.current{background:var(--accent);transform:scaleY(1.5)}
+  .seg:not(:disabled):hover{transform:scaleY(1.6)}
+
+  /* Bühne */
+  .stage{display:flex;align-items:flex-end;gap:16px;margin-bottom:18px}
+  .kiko-wrap{flex:0 0 132px}
+  .kiko{width:132px;height:auto;display:block;overflow:visible}
+  .kiko-wrap.hop{animation:hop .5s ease-out 2}
+  .bubble{
+    position:relative;flex:1;background:var(--surface);border:1px solid var(--line);
+    border-radius:22px;padding:16px 20px;font-weight:600;margin-bottom:30px;box-shadow:var(--shadow);
+  }
+  .bubble::before{
+    content:"";position:absolute;left:-9px;bottom:24px;width:16px;height:16px;background:var(--surface);
+    border-left:1px solid var(--line);border-bottom:1px solid var(--line);transform:rotate(45deg);
+  }
+  .bubble.pop{animation:pop .3s ease-out}
+
+  .body-g{animation:bob 3.4s ease-in-out infinite}
+  .eye{transform-box:fill-box;transform-origin:center;animation:blink 5s infinite}
+  .arm{transform-box:fill-box}
+  .arm-r{transform-origin:left center}
+  .arm-l{transform-origin:right center}
+  .wave .arm-r{animation:wave .55s ease-in-out 4}
+  .cheer .arm-r{transform:rotate(-70deg)}
+  .cheer .arm-l{transform:rotate(70deg)}
+  .mouth{display:none}
+  [data-mood="happy"] .m-happy,[data-mood="wave"] .m-happy{display:inline}
+  [data-mood="cheer"] .m-cheer{display:inline}
+  [data-mood="worry"] .m-worry{display:inline}
+  .antenna-ball{animation:glow 2.4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+  @keyframes blink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
+  @keyframes wave{0%,100%{transform:rotate(0)}50%{transform:rotate(-42deg)}}
+  @keyframes hop{0%,100%{transform:translateY(0)}45%{transform:translateY(-22px)}}
+  @keyframes pop{from{transform:scale(.97);opacity:.5}to{transform:scale(1);opacity:1}}
+  @keyframes glow{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+
+  /* Karte */
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:28px 28px 24px;box-shadow:var(--shadow)}
+  .card.swap{animation:pop .25s ease-out}
+  h2{font-size:1.55rem;line-height:1.2;margin:0 0 12px;letter-spacing:-.01em}
+  p{margin:0 0 12px;max-width:62ch}
+  ol,ul{margin:0 0 14px;padding-left:1.3em;max-width:62ch}
+  li{margin-bottom:6px}
+  a{color:var(--accent);font-weight:700;text-underline-offset:3px}
+  strong{font-weight:800}
+
+  .note,.tip,.warn{border-radius:16px;padding:12px 16px;margin:14px 0;font-size:.96rem;max-width:62ch}
+  .note{background:var(--accent-soft)}
+  .tip{background:var(--mint-soft)}
+  .warn{background:var(--coral-soft)}
+  .tip strong:first-child,.note strong:first-child,.warn strong:first-child{display:block;margin-bottom:2px}
+  .help{background:var(--surface-2);border:1px dashed var(--line);border-radius:16px;padding:12px 16px;margin:14px 0;font-size:.98rem}
+  .help strong{display:block;margin-bottom:4px}
+
+  /* Auswahl-Karten */
+  .choices{display:grid;gap:10px;margin:14px 0 6px}
+  .choice{
+    text-align:left;font:inherit;color:inherit;cursor:pointer;
+    background:var(--surface-2);border:2px solid var(--line);border-radius:18px;padding:14px 16px;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .choice strong{display:block}
+  .choice span{font-size:.94rem;color:var(--muted)}
+  .choice:hover{border-color:var(--accent)}
+  .choice[aria-checked="true"]{border-color:var(--accent);background:var(--accent-soft)}
+
+  /* Formular */
+  label{display:block;font-weight:800;margin:14px 0 6px}
+  .hint{font-weight:600;color:var(--muted);font-size:.92rem}
+  textarea,input[type="text"]{
+    width:100%;font:inherit;color:var(--ink);background:var(--surface-2);
+    border:2px solid var(--line);border-radius:14px;padding:10px 14px;
+  }
+  textarea{min-height:96px;resize:vertical}
+  textarea:focus,input[type="text"]:focus{border-color:var(--accent);outline:none}
+
+  /* Buttons */
+  .btn{
+    font:inherit;font-weight:800;cursor:pointer;border:0;border-radius:999px;padding:12px 26px;
+    background:var(--surface-2);color:var(--ink);box-shadow:inset 0 0 0 2px var(--line);
+    transition:transform .12s ease, opacity .12s ease;
+  }
+  .btn:hover{transform:translateY(-1px)}
+  .btn:active{transform:translateY(1px)}
+  .btn.primary{background:var(--btn-bg);color:var(--btn-fg);box-shadow:none}
+  .btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+  .btn.small{padding:7px 16px;font-size:.92rem}
+  .btn.link{display:inline-block;text-decoration:none;background:var(--accent);color:#fff;box-shadow:none}
+  .btn.link:hover{background:var(--accent)}
+  .actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:22px}
+  .actions .spacer{flex:1}
+  .textbtn{font:inherit;font-weight:700;background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;padding:6px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 10px}
+  .chip{
+    font:inherit;font-weight:700;font-size:.9rem;cursor:pointer;color:var(--ink);
+    background:var(--surface-2);border:2px solid var(--line);border-radius:999px;padding:5px 14px;
+  }
+  .chip:hover{border-color:var(--accent)}
+
+  /* Schema-Fenster */
+  .mock{margin:16px 0;max-width:400px}
+  .mock svg{width:100%;height:auto;display:block}
+  .mock figcaption{font-size:.88rem;color:var(--muted);margin-top:6px}
+  .mk-win{fill:var(--surface-2);stroke:var(--line);stroke-width:2}
+  .mk-dot{fill:var(--line)}
+  .mk-tab{fill:var(--line)}
+  .mk-hot{fill:var(--accent)}
+  .mk-line{fill:var(--line)}
+  .mk-t{font:700 12px ui-rounded,system-ui,sans-serif;fill:var(--muted)}
+  .mk-t.hot{fill:#fff}
+  .mk-pulse{fill:none;stroke:var(--accent);stroke-width:2.5;transform-box:fill-box;transform-origin:center;animation:ring 1.8s ease-out infinite}
+  @keyframes ring{0%{transform:scale(1);opacity:.9}100%{transform:scale(1.35);opacity:0}}
+
+  /* Aufklapper */
+  details.more{border:1px solid var(--line);border-radius:16px;padding:10px 16px;margin:14px 0;background:var(--surface-2);max-width:62ch}
+  details.more summary{cursor:pointer;font-weight:800}
+  details.more[open] summary{margin-bottom:10px}
+  details.more .chip{text-align:left;word-break:break-all}
+
+  :focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+
+  .prompt{background:var(--surface-2);border:1px solid var(--line);border-radius:16px;padding:12px 14px 14px;margin:0 0 14px}
+  .prompt pre{margin:0 0 10px;white-space:pre-wrap;word-break:break-word;font-family:inherit;font-size:.92rem;line-height:1.5;max-height:240px;overflow:auto}
+
+  footer{margin-top:26px;text-align:center;font-size:.88rem;color:var(--muted)}
+  .flinks{margin-top:10px;display:flex;justify-content:center;gap:18px;flex-wrap:wrap}
+  .flinks a{color:var(--muted);font-weight:600}
+
+  .confetti{position:fixed;width:10px;height:14px;border-radius:3px;pointer-events:none;z-index:50;animation:fly 1.2s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes fly{0%{transform:translate(0,0) rotate(0);opacity:1}100%{transform:translate(var(--dx),var(--dy)) rotate(var(--rot));opacity:0}}
+
+  @media (max-width:560px){
+    body{font-size:17px}
+    .stage{flex-direction:column-reverse;align-items:center;gap:8px}
+    .kiko-wrap{flex-basis:auto}
+    .kiko{width:110px}
+    .bubble{margin-bottom:0;width:100%}
+    .bubble::before{left:50%;margin-left:-8px;bottom:-9px;border-left:0;border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+    .card{padding:22px 18px 18px}
+  }
+  @media print{
+    body *{visibility:hidden}
+    #card,#card *{visibility:visible}
+    #card{position:absolute;left:0;top:0;width:100%;box-shadow:none;border:0}
+    .actions,.chips,.prompt button,.no-print{display:none !important}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important;transition:none !important}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="hgroup"><div class="brand">Kiko</div><span class="tag">Klickdummy</span></div>
+    <a class="hlink" href="../">Alle Werkzeuge</a>
+  </header>
+
+  <div class="progress">
+    <div class="progress-label" id="plabel"></div>
+    <nav class="segs" id="segs" aria-label="Fortschritt"></nav>
+  </div>
+
+  <section class="stage" aria-live="polite">
+    <div class="kiko-wrap" id="kikoWrap">
+      <svg class="kiko" id="kiko" data-mood="wave" viewBox="0 0 160 190" role="img" aria-label="Kiko, ein kleiner freundlicher Roboter">
+        <ellipse cx="80" cy="182" rx="40" ry="6" fill="#16213A" opacity=".18"/>
+        <g class="body-g">
+          <rect class="arm arm-l" x="4" y="98" width="30" height="15" rx="7.5" fill="#43BC92"/>
+          <rect class="arm arm-r" x="126" y="98" width="30" height="15" rx="7.5" fill="#43BC92"/>
+          <rect x="44" y="150" width="26" height="22" rx="10" fill="#16213A"/>
+          <rect x="90" y="150" width="26" height="22" rx="10" fill="#16213A"/>
+          <line x1="80" y1="40" x2="80" y2="22" stroke="#16213A" stroke-width="4" stroke-linecap="round"/>
+          <circle class="antenna-ball" cx="80" cy="15" r="8.5" fill="#FFD166"/>
+          <rect x="24" y="38" width="112" height="118" rx="46" fill="#5ED3A8"/>
+          <ellipse cx="54" cy="54" rx="22" ry="8" fill="#fff" opacity=".3" transform="rotate(-22 54 54)"/>
+          <rect x="38" y="60" width="84" height="62" rx="30" fill="#16213A"/>
+          <ellipse class="eye" cx="62" cy="88" rx="7" ry="9.5" fill="#B8F5DE"/>
+          <ellipse class="eye" cx="98" cy="88" rx="7" ry="9.5" fill="#B8F5DE"/>
+          <circle cx="48" cy="108" r="5" fill="#FF8A7A" opacity=".85"/>
+          <circle cx="112" cy="108" r="5" fill="#FF8A7A" opacity=".85"/>
+          <path class="mouth m-happy" d="M70 104 Q80 114 90 104" fill="none" stroke="#B8F5DE" stroke-width="3.5" stroke-linecap="round"/>
+          <path class="mouth m-cheer" d="M67 101 Q80 124 93 101 Z" fill="#FF8A7A" stroke="#B8F5DE" stroke-width="3" stroke-linejoin="round"/>
+          <path class="mouth m-worry" d="M70 111 Q80 101 90 111" fill="none" stroke="#B8F5DE" stroke-width="3.5" stroke-linecap="round"/>
+          <circle cx="80" cy="138" r="7" fill="#FFD166"/>
+          <circle cx="80" cy="138" r="3" fill="#16213A" opacity=".25"/>
+        </g>
+      </svg>
+    </div>
+    <div class="bubble" id="bubble"></div>
+  </section>
+
+  <main class="card" id="card"></main>
+
+  <footer>
+    Klickdummy: Nur das Kopieren und das Drucken funktionieren wirklich. Deine Eingaben bleiben in diesem Browser-Tab und verschwinden beim Schließen.
+    <button class="textbtn no-print" id="reset" type="button">Von vorn beginnen</button>
+    <div class="flinks no-print"><a href="https://geprog.com/imprint">Impressum</a> <a href="https://geprog.com/privacy">Datenschutz</a> <a href="https://geprog.com/">GEPROG GmbH</a></div>
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var state = { step:0, max:0, who:null, idea:"", users:"", never:"", help:false };
+  var KEY = "kiko-v2";
+
+  /* ---------- Texte, die kopiert werden ---------- */
+  function orPlaceholder(v, ph){ return (v && v.trim()) ? v.trim() : ph; }
+
+  var TEXTS = {
+    rules: function(){
+      return "Bitte lege in diesem Ordner eine Datei namens CLAUDE.md an. Sie enthält die Spielregeln für unsere Zusammenarbeit, die du künftig immer beachtest:\n\n" +
+"- Ich bin Einsteiger und kann nicht programmieren. Erkläre alles in einfachen Worten, ohne Fachbegriffe.\n" +
+"- Arbeite in kleinen Schritten. Sag mir vor jedem größeren Schritt, was du vorhast, und warte auf mein Ja.\n" +
+"- Arbeite in drei Rollen und sag mir, in welcher du gerade bist: Planer (was bauen wir?), Umsetzer (bauen), Prüfer (funktioniert es wirklich?).\n" +
+"- Sag mir nach jeder Änderung, wie ich das Ergebnis selbst ansehen und prüfen kann.\n" +
+"- Sprich nicht über technische Einrichtung, zum Beispiel Git, Versionsverwaltung oder Konfigurationsdateien. Erledige nötige technische Dinge still im Hintergrund oder sag nur in einem einfachen Satz, was sie für mich bedeuten.\n" +
+"- Zugangsschlüssel und Passwörter gehören nur in eine geschützte Datei (.env) und nie in den Chat oder in den Code. Richte diesen Schutz still ein, wenn er gebraucht wird.\n" +
+"- Lösche oder überschreibe nichts, ohne vorher zu fragen.\n" +
+"- Verwende keine echten Namen, Adressen, Fotos oder andere persönliche Daten in der App. Nimm erfundene Beispieldaten.\n" +
+"- Wenn ich „einfacher“ schreibe, erkläre es noch einmal ohne Fachwörter.\n" +
+"- Wenn etwas unklar ist, frag nach, statt zu raten.\n\n" +
+"Lege jetzt nur diese Datei an, richte sonst nichts ein und antworte danach mit einem einzigen kurzen, einfachen Satz.";
+    },
+    plan: function(){
+      return "Ich möchte eine kleine App bauen lassen.\n\n" +
+"Mein Ziel: " + orPlaceholder(state.idea, "[hier deine Idee]") + "\n" +
+"Wer sie benutzt: " + orPlaceholder(state.users, "nur ich") + "\n" +
+"Das soll sie auf keinen Fall tun: " + orPlaceholder(state.never, "nichts Unerwartetes")  + "\n\n" +
+"Bitte baue noch nichts. Stell mir zuerst bis zu fünf Rückfragen, eine nach der anderen, in einfachen Worten. Schlage danach einen Plan in kleinen Schritten vor, die ich einzeln ansehen kann. Warte dann auf mein Ja.";
+    },
+    backup: function(){
+      return "Bitte sichere den aktuellen Stand dieses Projekts mit Git. Stelle vorher sicher, dass die Datei .env (mit Zugangsschlüsseln) nicht mit gesichert wird. Erkläre mir danach Schritt für Schritt und ohne Fachbegriffe, wie ich ein GitHub-Konto anlege und das Projekt als PRIVATES Projekt dort hochlade.";
+    }
+  };
+  var LABELS = { rules:"Spielregeln-Datei", plan:"Erstes Gespräch", backup:"Projekt sichern" };
+
+  var EXAMPLES = {
+    list:{ idea:"Eine Aufgabenliste, in die ich Aufgaben eintippen und abhaken kann.", users:"Nur ich", never:"Nichts speichern, was ich nicht eingegeben habe." },
+    quiz:{ idea:"Ein Vokabel-Quiz mit zehn Karten, bei dem ich sofort sehe, ob meine Antwort stimmt.", users:"Meine Klasse", never:"Keine Namen oder Ergebnisse von Personen speichern." },
+    liqui:{ idea:"Eine einfache Liquiditätsplanung: Ich trage erwartete Einnahmen und Ausgaben pro Monat ein und sehe sofort, ob und wann das Geld knapp wird.", users:"Ich und mein Team", never:"Keine echten Kundendaten oder Kontonummern speichern." }
+  };
+
+  /* ---------- Hilfsfunktionen für Inhalte ---------- */
+  function isMinor(){ return state.who === "minor"; }
+  function isGuide(){ return state.who === "guide"; }
+  function adultOnly(text){
+    if(isMinor()) return "<div class=\"warn\"><strong>Dieser Teil ist für eine erwachsene Person</strong>Claude-Konten gibt es erst ab 18 Jahren. Zeig diese Seite deiner Lehrkraft oder einem Elternteil. Sie erledigen diesen Schritt für dich.</div>";
+    return "";
+  }
+  var SCHOOL_DATA = "<div class=\"warn\"><strong>Keine echten Daten eingeben</strong>Schreibe keine echten Namen, Fotos, Adressen oder Noten in den Chat oder in die App. Nimm erfundene Beispiele.</div>";
+
+  /* ---------- Schritte ---------- */
+  var STEPS = [
+    {
+      title:"Los geht's",
+      short:"Start",
+      say:function(){
+        if(state.who === "minor") return "Cool, du bist dabei! Eine erwachsene Person hilft beim Konto. Die Ideen und das Ausprobieren gehören dir.";
+        if(state.who === "guide") return "Schön, dass du eine Gruppe begleitest! Ihr plant und testet gemeinsam. Ich führe euch durch.";
+        if(state.who === "adult") return "Prima! Dann legen wir gleich los. Du musst nichts können.";
+        return "Hallo, ich bin Kiko! Ich zeige dir Schritt für Schritt, wie du dir eine eigene kleine App bauen lässt. Klicken und Kopieren reicht.";
+      },
+      mood:"wave",
+      body:function(){
+        var h = "<p>In etwa einer halben Stunde hast du ein Ergebnis. Wer bist du?</p>" +
+        "<div class=\"choices\" role=\"radiogroup\" aria-label=\"Wer bist du?\">" +
+        choice("adult","Ich bin erwachsen","Ich mache alles selbst, mit meinem eigenen Konto.") +
+        choice("minor","Ich bin unter 18","Ich plane und teste. Eine erwachsene Person übernimmt das Konto.") +
+        choice("guide","Ich begleite eine Gruppe","Zum Beispiel als Lehrkraft in der Schule oder in einem Workshop.") +
+        "</div>";
+        if(state.who === "minor" || state.who === "guide"){
+          h += "<div class=\"note\"><strong>Warum das so ist</strong>Der KI-Anbieter erlaubt ein eigenes Konto erst ab 18 Jahren und prüft das Alter. Das Ausdenken, Planen und Testen der App kann trotzdem jede und jeder machen.</div>";
+        }
+        if(state.who === "guide"){
+          h += "<div class=\"note\"><strong>Vorab klären</strong>Ob Schülerinnen und Schüler mitlesen oder mittippen dürfen, klärt ihr vorher mit Schulleitung, Datenschutz und den Nutzungsbedingungen des Anbieters.</div>";
+        }
+        return h;
+      },
+      needs:function(){ return !!state.who; },
+      primary:"Weiter"
+    },
+    {
+      title:"Deine Idee",
+      short:"Idee",
+      say:function(){ return "Was soll deine App können? Eine grobe Idee reicht. Alles Weitere klären wir im Gespräch mit der KI."; },
+      mood:"happy",
+      body:function(){
+        var h = "<p>Beschreibe in eigenen Worten, was du bauen möchtest. Kein Fachwissen nötig.</p>" +
+        "<div class=\"chips\" aria-label=\"Beispiele\">" +
+        "<button type=\"button\" class=\"chip\" data-action=\"example\" data-key=\"list\">Aufgabenliste</button>" +
+        "<button type=\"button\" class=\"chip\" data-action=\"example\" data-key=\"quiz\">Vokabel-Quiz</button>" +
+        "<button type=\"button\" class=\"chip\" data-action=\"example\" data-key=\"liqui\">Liquiditätsplanung</button>" +
+        "</div>" +
+        "<label for=\"f-idea\">Was soll die App können?</label>" +
+        "<textarea id=\"f-idea\" placeholder=\"Zum Beispiel: Eine Seite, auf der ich meine Hausaufgaben eintrage und abhaken kann.\"></textarea>" +
+        "<label for=\"f-users\">Wer benutzt sie? <span class=\"hint\">(freiwillig)</span></label>" +
+        "<input type=\"text\" id=\"f-users\" placeholder=\"Nur ich, meine Klasse, mein Team ...\">" +
+        "<label for=\"f-never\">Was soll sie auf keinen Fall tun? <span class=\"hint\">(freiwillig)</span></label>" +
+        "<input type=\"text\" id=\"f-never\" placeholder=\"Zum Beispiel: keine Daten von anderen speichern\">" +
+        "<div class=\"tip\"><strong>Gut zu wissen: Du brauchst keinen perfekten Auftrag</strong>Früher hieß es: Schreib den einen perfekten Auftrag (Prompt), dann klappt es. Das ist nicht mehr nötig. Moderne KI-Assistenten arbeiten besser im Gespräch. Du nennst das Ziel, sie fragen nach und machen einen Plan, und ihr geht in kleinen Schritten vor.</div>";
+        if(isMinor() || isGuide()){
+          h += "<p class=\"no-print\"><button type=\"button\" class=\"btn small\" data-action=\"print\">Steckbrief drucken</button></p>";
+        }
+        return h;
+      },
+      needs:function(){ return state.idea.trim().length > 3; },
+      primary:"Weiter"
+    },
+    {
+      title:"Konto beim KI-Anbieter anlegen",
+      short:"Konto",
+      say:function(){
+        return isMinor() ? "Jetzt ist die erwachsene Person dran. Du schaust zu und hilfst beim Lesen." : "Jetzt brauchst du ein Konto. Es ist der Schlüssel, mit dem die KI für dich arbeitet.";
+      },
+      mood:"happy",
+      body:function(){
+        return adultOnly() +
+        "<p>In dieser Anleitung nehmen wir Claude. Andere Anbieter funktionieren ähnlich.</p>" +
+        "<ol><li>Öffne die Seite des Anbieters.</li><li>Melde dich mit einer E-Mail-Adresse an oder registriere dich.</li><li>Bestätige die E-Mail, die du bekommst.</li></ol>" +
+        "<p><a class=\"btn link\" href=\"https://claude.ai\" target=\"_blank\" rel=\"noopener\">claude.ai öffnen</a></p>" +
+        "<div class=\"note\"><strong>Kosten</strong>Für die Code-Funktion ist meist ein bezahltes Abo nötig. Auf der <a href=\"https://claude.com/pricing\" target=\"_blank\" rel=\"noopener\">Preisseite</a> siehst du den aktuellen Stand. Bei der Anmeldung bestätigst du, dass du mindestens 18 Jahre alt bist.</div>";
+      },
+      help:function(){ return "<strong>Keine Bestätigungs-Mail gekommen?</strong>Schau im Spam-Ordner nach und warte ein paar Minuten. Sonst fordere die E-Mail auf der Anmeldeseite noch einmal an."; },
+      primary:"Hat geklappt"
+    },
+    {
+      title:"App installieren und anmelden",
+      short:"App",
+      say:function(){ return "Jetzt holen wir die App auf den Computer. Das geht wie bei jedem anderen Programm."; },
+      mood:"happy",
+      body:function(){
+        return adultOnly() +
+        "<ol><li>Lade die App für deinen Computer herunter.</li>" +
+        "<li>Installiere sie. Unter Windows: Datei doppelklicken und den Anweisungen folgen. Auf dem Mac: Das Symbol in den Ordner „Programme“ ziehen.</li>" +
+        "<li>Öffne die App und melde dich mit dem Konto an.</li>" +
+        "<li>Schau <strong>oben im Fenster</strong> nach den Reitern zum Umschalten. Sie sitzen oft links, manchmal auch rechts. Klicke auf <strong>„Code“</strong>. Hier lässt du später deine App bauen.</li></ol>" +
+        "<p><a class=\"btn link\" href=\"https://claude.com/download\" target=\"_blank\" rel=\"noopener\">App herunterladen</a></p>" +
+        "<figure class=\"mock\">" +
+        "<svg viewBox=\"0 0 360 130\" role=\"img\" aria-label=\"Schematisches App-Fenster mit den Reitern Chat und Code, Code ist hervorgehoben\">" +
+        "<rect class=\"mk-win\" x=\"2\" y=\"2\" width=\"356\" height=\"126\" rx=\"14\"/>" +
+        "<circle class=\"mk-dot\" cx=\"20\" cy=\"20\" r=\"4\"/><circle class=\"mk-dot\" cx=\"34\" cy=\"20\" r=\"4\"/><circle class=\"mk-dot\" cx=\"48\" cy=\"20\" r=\"4\"/>" +
+        "<rect class=\"mk-tab\" x=\"66\" y=\"9\" width=\"52\" height=\"22\" rx=\"11\"/><text class=\"mk-t\" x=\"92\" y=\"24\" text-anchor=\"middle\">Chat</text>" +
+        "<rect class=\"mk-pulse\" x=\"124\" y=\"7\" width=\"60\" height=\"26\" rx=\"13\"/>" +
+        "<rect class=\"mk-hot\" x=\"124\" y=\"9\" width=\"60\" height=\"22\" rx=\"11\"/><text class=\"mk-t hot\" x=\"154\" y=\"24\" text-anchor=\"middle\">Code</text>" +
+        "<rect class=\"mk-line\" x=\"24\" y=\"56\" width=\"200\" height=\"8\" rx=\"4\"/><rect class=\"mk-line\" x=\"24\" y=\"76\" width=\"280\" height=\"8\" rx=\"4\"/><rect class=\"mk-line\" x=\"24\" y=\"96\" width=\"150\" height=\"8\" rx=\"4\"/>" +
+        "</svg><figcaption>Schematisch: Bei dir kann es etwas anders aussehen. Achte oben im Fenster auf die Reiter.</figcaption></figure>" +
+        "<details class=\"more\"><summary>Ich nutze Linux</summary>" +
+        "<p>Die Desktop-App gibt es nur für Mac und Windows. Unter Linux nutzt du die KI in einem Textfenster, dem Terminal. Das Chatten funktioniert dort genauso.</p>" +
+        "<ol><li>Öffne das Terminal.</li>" +
+        "<li>Installiere die KI (ein Klick auf den Befehl kopiert ihn, dann einfügen und Enter):<div class=\"chips\">" + chip("curl -fsSL https://claude.ai/install.sh | bash") + "</div></li>" +
+        "<li>Lege deinen Projektordner an und wechsle hinein:<div class=\"chips\">" + chip("mkdir ~/meine-erste-app") + chip("cd ~/meine-erste-app") + "</div></li>" +
+        "<li>Starte die KI mit dem Befehl <strong>claude</strong> und melde dich an, wenn du gefragt wirst.</li></ol>" +
+        "<p>Damit hast du den Ordner schon gewählt. Im nächsten Schritt entfällt für dich das Auswählen des Ordners.</p></details>" +
+        "<div class=\"note\"><strong>Wenn es anders aussieht</strong>Anbieter ändern ihre Oberflächen manchmal. Suche nach dem Reiter, der zum Bauen von Programmen gedacht ist.</div>";
+      },
+      help:function(){ return "<strong>Den Reiter „Code“ siehst du nicht?</strong>Schau oben im Fenster nach den Reitern, sie sitzen oft links, manchmal rechts. Fehlt er dort, prüfe, ob du angemeldet bist und ob dein Abo die Code-Funktion enthält (die kostenlose Version meist nicht). Ein Neustart der App hilft oft."; },
+      primary:"Hat geklappt"
+    },
+    {
+      title:"Ordner anlegen und Spielregeln festlegen",
+      short:"Ordner",
+      say:function(){ return "Ein Ordner ist wie ein Zimmer für dein Projekt. Und eine Spielregeln-Datei sorgt dafür, dass die KI sich immer an deine Wünsche hält."; },
+      mood:"happy",
+      body:function(){
+        return "<ol><li>Lege in deinen Dokumenten einen neuen Ordner an, zum Beispiel <strong>meine-erste-app</strong>.</li>" +
+        "<li>Wähle diesen Ordner in der App aus. Meist gibt es dafür am Eingabefeld einen Knopf mit Ordner-Symbol. Steht danach der Name deines Ordners dort, hat es geklappt.</li>" +
+        "<li>Kopiere die Vorlage unten, füge sie in das Eingabefeld ein und drücke Enter. Das ist mit „Abschicken“ gemeint.</li></ol>" +
+        "<div data-copy=\"rules\"></div>" +
+        "<div class=\"tip\"><strong>Gut zu wissen: Abschicken heißt nur chatten</strong>Du schreibst der KI wie in einem ganz normalen Chat, und sie antwortet dir. Mehr passiert dabei nicht.</div>" +
+        "<div class=\"tip\"><strong>Gut zu wissen: Klingt die KI zu technisch?</strong>Dann schreibe: „Bitte einfacher, ohne Fachwörter.“ Du musst nichts davon verstehen.</div>" +
+        "<div class=\"tip\"><strong>Gut zu wissen: Warum eine Datei?</strong>Die KI vergisst nach jedem Gespräch, was du ihr gesagt hast. Eine Datei mit Spielregeln liest sie dagegen jedes Mal neu. Bei Claude heißt sie CLAUDE.md.</div>" +
+        (isMinor() || isGuide() ? SCHOOL_DATA : "");
+      },
+      help:function(){ return "<strong>Du findest die Ordner-Auswahl nicht?</strong>Suche am Eingabefeld nach einem Knopf mit Ordner-Symbol oder dem Wort „Ordner“. Findest du ihn nicht, schreibe in das Eingabefeld: „Wie wähle ich meinen Arbeitsordner aus?“ und folge der Antwort."; },
+      primary:"Hat geklappt"
+    },
+    {
+      title:"Erst planen, dann bauen",
+      short:"Planen",
+      say:function(){ return "Jetzt kommt der spannende Teil! Aber wir sagen der KI erst, was wir wollen, und lassen sie Fragen stellen."; },
+      mood:"happy",
+      body:function(){
+        return "<p>Ich habe aus deiner Idee die erste Nachricht gebaut. Kopiere sie und schicke sie ab.</p>" +
+        "<div data-copy=\"plan\"></div>" +
+        "<ol><li>Die KI stellt dir Fragen. Antworte in normalen Worten.</li>" +
+        "<li>Dann schlägt sie einen Plan in kleinen Schritten vor. Lies ihn durch.</li>" +
+        "<li>Passt der Plan? Dann schreibe: <strong>Ja, mach Schritt 1.</strong> Wenn nicht, sag, was du anders möchtest.</li></ol>" +
+        "<div class=\"tip\"><strong>Gut zu wissen: Der Plan-Modus</strong>Viele Assistenten haben einen Plan-Modus, in dem die KI nur überlegt und noch nichts verändert. Wenn deine App ihn anbietet, schalte ihn für dieses Gespräch ein.</div>" +
+        (isGuide() ? "<div class=\"note\"><strong>Für Gruppen</strong>Die Gruppe kann die Rückfragen der KI gemeinsam beantworten. Das ist der Moment, in dem am meisten gelernt wird.</div>" : "");
+      },
+      help:function(){ return "<strong>Die KI fängt trotzdem an zu bauen?</strong>Schreibe: „Stopp. Bitte erst Rückfragen und einen Plan, gebaut wird noch nicht.“"; },
+      primary:"Hat geklappt"
+    },
+    {
+      title:"In kleinen Schritten bauen und ausprobieren",
+      short:"Bauen",
+      say:function(){ return "Schau, was entsteht! Nach jedem kleinen Schritt schaust du es dir an und sagst, was besser sein soll."; },
+      mood:"happy",
+      body:function(){
+        return "<p>So arbeitest du ab jetzt, wie ein richtiges Team. Die KI plant, baut und prüft. Du schaust hin und entscheidest.</p>" +
+        "<ol><li>Öffne dein Ergebnis. Meist doppelklickst du im Ordner auf die Datei <strong>index.html</strong>. Die KI sagt dir, welche es ist.</li>" +
+        "<li>Probiere alles aus. Was gefällt dir, was nicht?</li>" +
+        "<li>Sag es der KI in eigenen Worten und lass sie den nächsten Schritt machen.</li></ol>" +
+        "<p>Diese kurzen Sätze helfen oft. Klicke auf einen, um ihn zu kopieren:</p>" +
+        "<div class=\"chips\">" +
+        chip("Mach die Schrift größer und die Farben ruhiger.") +
+        chip("Prüfe selbst, ob alles funktioniert, und teste auch falsche Eingaben.") +
+        chip("Erkläre mir in einfachen Worten, was du gerade geändert hast.") +
+        chip("Welche Datei muss ich öffnen, und wie?") +
+        chip("Das war zu viel auf einmal. Mach die letzte Änderung rückgängig.") +
+        "</div>" +
+        "<div class=\"note\"><strong>Kleine Schritte gewinnen</strong>Bitte immer um eine Sache auf einmal. So bleibt es verständlich, und wenn etwas schiefgeht, ist es schnell repariert.</div>" +
+        "<div class=\"tip\"><strong>Gut zu wissen: Speichern musst du nichts</strong>Die KI legt die Dateien selbst in deinem Projektordner ab, während sie arbeitet. Liegt dort nichts, frage sie: „Wo hast du die Dateien gespeichert?“</div>" +
+        "<div class=\"tip\"><strong>Gut zu wissen: Neues Thema, neuer Chat</strong>Je länger ein Gespräch wird, desto eher verliert die KI den Überblick. Starte deshalb für jedes neue Thema einen neuen Chat im selben Ordner. Die Spielregeln-Datei liest sie dort von selbst wieder ein, und das bereits Gebaute bleibt erhalten.</div>";
+      },
+      help:function(){ return "<strong>Es öffnet sich nichts oder es sieht kaputt aus?</strong>Schreibe der KI genau das, in deinen Worten, zum Beispiel: „Ich doppelklicke auf die Datei, aber es passiert nichts.“ Wenn du kannst, beschreibe, was du siehst."; },
+      primary:"Hat geklappt"
+    },
+    {
+      title:"Sichern und zeigen (freiwillig)",
+      short:"Sichern",
+      say:function(){ return "Fast geschafft! Dieser Schritt ist freiwillig. Du kannst dein Projekt sichern und später anderen zeigen."; },
+      mood:"happy",
+      body:function(){
+        return "<p>Mit einem GitHub-Konto sicherst du dein Projekt online. Die KI führt dich auch dabei.</p>" +
+        (isMinor() ? adultOnly() : "") +
+        "<div data-copy=\"backup\"></div>" +
+        "<div class=\"warn\"><strong>Privat bleiben</strong>Projekte mit Zugangsschlüsseln gehören nie ins offene Internet. Nur reine Seiten ohne Schlüssel und ohne persönliche Daten darfst du öffentlich machen.</div>";
+      },
+      help:function(){ return "<strong>Du willst das lieber später machen?</strong>Kein Problem. Dein Projekt liegt in deinem Ordner und geht nicht verloren."; },
+      primary:"Fertig"
+    }
+  ];
+  var N = STEPS.length;
+
+  function choice(val, title, sub){
+    var selected = state.who === val;
+    var roving = state.who ? selected : val === "adult";
+    return "<button type=\"button\" role=\"radio\" class=\"choice\" data-action=\"who\" data-value=\"" + val + "\" aria-checked=\"" + selected + "\" tabindex=\"" + (roving ? "0" : "-1") + "\"><strong>" + title + "</strong><span>" + sub + "</span></button>";
+  }
+  function chip(text){
+    return "<button type=\"button\" class=\"chip\" data-action=\"copy-chip\" data-text=\"" + text.replace(/"/g,"&quot;") + "\">" + text + "</button>";
+  }
+
+  /* ---------- Speichern (nur in diesem Tab) ---------- */
+  function load(){
+    try{
+      var raw = window.sessionStorage.getItem(KEY);
+      if(!raw) return;
+      var s = JSON.parse(raw);
+      ["step","max"].forEach(function(k){ if(typeof s[k] === "number") state[k] = Math.min(s[k], N); });
+      ["who","idea","users","never"].forEach(function(k){ if(typeof s[k] === "string" || s[k] === null) state[k] = s[k]; });
+    }catch(e){}
+  }
+  function save(){
+    try{
+      window.sessionStorage.setItem(KEY, JSON.stringify({step:state.step,max:state.max,who:state.who,idea:state.idea,users:state.users,never:state.never}));
+    }catch(e){}
+  }
+
+  /* ---------- Elemente ---------- */
+  var elSegs = document.getElementById("segs");
+  var elLabel = document.getElementById("plabel");
+  var elBubble = document.getElementById("bubble");
+  var elCard = document.getElementById("card");
+  var elKiko = document.getElementById("kiko");
+  var elWrap = document.getElementById("kikoWrap");
+  var moodTimer = null;
+
+  function setMood(mood, revertTo, ms){
+    elKiko.setAttribute("data-mood", mood);
+    elKiko.classList.toggle("wave", mood === "wave");
+    elKiko.classList.toggle("cheer", mood === "cheer");
+    clearTimeout(moodTimer);
+    if(revertTo){ moodTimer = setTimeout(function(){ setMood(revertTo); }, ms || 1500); }
+  }
+  function currentMood(){
+    if(state.step >= N) return "cheer";
+    if(state.help && STEPS[state.step].help) return "worry";
+    return STEPS[state.step].mood;
+  }
+  function hop(){ elWrap.classList.remove("hop"); void elWrap.offsetWidth; elWrap.classList.add("hop"); }
+  function confetti(count){
+    var colors = ["#5ED3A8","#FFD166","#FF8A7A","#4B4FD1","#8EC5FF"];
+    var rect = elWrap.getBoundingClientRect();
+    var cx = rect.left + rect.width/2, cy = rect.top + 40;
+    for(var i=0;i<count;i++){
+      var c = document.createElement("span");
+      c.className = "confetti";
+      c.style.left = cx + "px"; c.style.top = cy + "px";
+      c.style.background = colors[i % colors.length];
+      c.style.setProperty("--dx", (Math.random()*440-220) + "px");
+      c.style.setProperty("--dy", (Math.random()*300-90) + "px");
+      c.style.setProperty("--rot", (Math.random()*720-360) + "deg");
+      document.body.appendChild(c);
+      (function(n){ setTimeout(function(){ n.remove(); }, 1300); })(c);
+    }
+  }
+
+  /* ---------- Fortschritt ---------- */
+  function renderProgress(){
+    elSegs.innerHTML = "";
+    for(var i=0;i<N;i++){
+      var b = document.createElement("button");
+      b.type = "button";
+      var done = i < state.step || state.step >= N;
+      b.className = "seg" + (done ? " done" : "") + (i === state.step ? " current" : "");
+      b.setAttribute("data-action","goto");
+      b.setAttribute("data-index", String(i));
+      b.setAttribute("aria-label","Schritt " + (i+1) + ": " + STEPS[i].title);
+      if(i === state.step) b.setAttribute("aria-current","step");
+      if(i > state.max) b.disabled = true;
+      elSegs.appendChild(b);
+    }
+    elLabel.textContent = state.step >= N ? "Geschafft" : ("Schritt " + (state.step+1) + " von " + N + ": " + STEPS[state.step].short);
+  }
+
+  /* ---------- Kopier-Boxen ---------- */
+  function fillCopyAreas(){
+    var areas = elCard.querySelectorAll("[data-copy]");
+    areas.forEach(function(area){
+      var key = area.getAttribute("data-copy");
+      area.className = "prompt";
+      area.innerHTML = "<pre data-pre></pre><button type=\"button\" class=\"btn small primary\" data-action=\"copy\" data-key=\"" + key + "\">Kopieren: " + LABELS[key] + "</button>";
+      area.querySelector("[data-pre]").textContent = TEXTS[key]();
+    });
+  }
+
+  function fillFields(){
+    var a = document.getElementById("f-idea"), b = document.getElementById("f-users"), c = document.getElementById("f-never");
+    if(a) a.value = state.idea;
+    if(b) b.value = state.users;
+    if(c) c.value = state.never;
+  }
+
+  /* ---------- Karte ---------- */
+  function renderCard(){
+    if(state.step >= N){
+      elCard.innerHTML =
+        "<h2>Geschafft!</h2>" +
+        "<p>Du hast dir eine App bauen lassen, ohne selbst zu programmieren. Und du hast dabei gelernt, wie man heute mit KI arbeitet: erst das Ziel, dann Fragen und ein Plan, dann kleine Schritte und viel Ausprobieren.</p>" +
+        "<ul><li>Bitte die KI um Änderungen, so oft du willst.</li><li>Starte ein neues Projekt mit einer neuen Idee.</li><li>Zeig anderen, was du gebaut hast.</li></ul>" +
+        "<div class=\"actions\"><button type=\"button\" class=\"btn\" data-action=\"back\">Zurück</button><span class=\"spacer\"></span><button type=\"button\" class=\"btn primary\" data-action=\"restart\">Neues Projekt starten</button></div>";
+      return;
+    }
+    var s = STEPS[state.step];
+    var html = "<h2>" + s.title + "</h2>" + s.body();
+    if(s.help && state.help){
+      html += "<div class=\"help\" role=\"region\" aria-label=\"Hilfe\">" + s.help() + "</div>";
+    }
+    var ok = s.needs ? s.needs() : true;
+    html += "<div class=\"actions\">";
+    if(state.step > 0) html += "<button type=\"button\" class=\"btn\" data-action=\"back\">Zurück</button>";
+    if(s.help) html += "<button type=\"button\" class=\"textbtn\" data-action=\"help\">" + (state.help ? "Hilfe ausblenden" : "Es hat nicht geklappt") + "</button>";
+    html += "<span class=\"spacer\"></span>";
+    html += "<button type=\"button\" class=\"btn primary\" id=\"nextBtn\" data-action=\"next\"" + (ok ? "" : " disabled") + ">" + s.primary + "</button></div>";
+    elCard.innerHTML = html;
+    fillCopyAreas();
+    fillFields();
+  }
+
+  function render(withMotion){
+    renderProgress();
+    elBubble.textContent = state.step >= N ? "Wir haben es geschafft! Ich bin richtig stolz auf dich." : STEPS[state.step].say();
+    setMood(currentMood());
+    renderCard();
+    if(withMotion){
+      elBubble.classList.remove("pop"); void elBubble.offsetWidth; elBubble.classList.add("pop");
+      elCard.classList.remove("swap"); void elCard.offsetWidth; elCard.classList.add("swap");
+    }
+    save();
+  }
+
+  /* ---------- Kopieren ---------- */
+  function copyText(text, btn, doneLabel){
+    var old = btn.textContent;
+    function ok(){
+      btn.textContent = doneLabel || "Kopiert!";
+      setTimeout(function(){ btn.textContent = old; }, 1400);
+      setMood("cheer", currentMood(), 1200);
+      hop();
+    }
+    function fallback(){
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try{ document.execCommand("copy"); ok(); }catch(e){ btn.textContent = "Bitte von Hand markieren"; }
+      ta.remove();
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(ok, fallback); }
+    else{ fallback(); }
+  }
+
+  /* ---------- Ereignisse ---------- */
+  document.addEventListener("click", function(ev){
+    var t = ev.target.closest("[data-action]");
+    if(!t || t.disabled) return;
+    var a = t.getAttribute("data-action");
+
+    if(a === "next"){
+      var first = state.step === 0;
+      state.step = Math.min(state.step + 1, N);
+      state.max = Math.max(state.max, state.step);
+      state.help = false;
+      render(true);
+      if(!first){ hop(); confetti(state.step >= N ? 60 : 14); if(state.step < N){ setMood("cheer", currentMood(), 1300); } }
+      window.scrollTo({top:0, behavior:"smooth"});
+    }else if(a === "back"){
+      state.step = Math.max(state.step - 1, 0); state.help = false; render(true);
+    }else if(a === "goto"){
+      var idx = parseInt(t.getAttribute("data-index"),10);
+      if(idx <= state.max){ state.step = idx; state.help = false; render(true); }
+    }else if(a === "help"){
+      state.help = !state.help; render(false);
+    }else if(a === "who"){
+      state.who = t.getAttribute("data-value");
+      render(false);
+      setMood("cheer", currentMood(), 1200); hop();
+    }else if(a === "example"){
+      var ex = EXAMPLES[t.getAttribute("data-key")];
+      state.idea = ex.idea; state.users = ex.users; state.never = ex.never;
+      fillFields(); save();
+      var nb = document.getElementById("nextBtn"); if(nb) nb.disabled = !STEPS[state.step].needs();
+    }else if(a === "copy"){
+      copyText(TEXTS[t.getAttribute("data-key")](), t);
+    }else if(a === "copy-chip"){
+      var label = t.textContent;
+      copyText(t.getAttribute("data-text"), t, "Kopiert!");
+      setTimeout(function(){ t.textContent = label; }, 1500);
+    }else if(a === "print"){
+      window.print();
+    }else if(a === "restart"){
+      resetAll();
+    }
+  });
+
+  document.addEventListener("keydown", function(ev){
+    var dir = ev.key === "ArrowDown" || ev.key === "ArrowRight" ? 1
+            : ev.key === "ArrowUp" || ev.key === "ArrowLeft" ? -1 : 0;
+    if(!dir) return;
+    var t = ev.target.closest && ev.target.closest('[role="radio"]');
+    var group = t && t.closest('[role="radiogroup"]');
+    if(!group) return;
+    ev.preventDefault();
+    var items = Array.prototype.slice.call(group.querySelectorAll('[role="radio"]'));
+    var idx = items.indexOf(t);
+    var next = items[(idx + dir + items.length) % items.length];
+    state.who = next.getAttribute("data-value");
+    render(false);
+    setMood("cheer", currentMood(), 1200); hop();
+    var focusTarget = document.querySelector('[role="radio"][data-value="' + state.who + '"]');
+    if(focusTarget) focusTarget.focus();
+  });
+
+  document.addEventListener("input", function(ev){
+    var id = ev.target.id;
+    if(id === "f-idea") state.idea = ev.target.value;
+    else if(id === "f-users") state.users = ev.target.value;
+    else if(id === "f-never") state.never = ev.target.value;
+    else return;
+    save();
+    var nb = document.getElementById("nextBtn");
+    if(nb && STEPS[state.step].needs) nb.disabled = !STEPS[state.step].needs();
+  });
+
+  function resetAll(){
+    state = { step:0, max:0, who:null, idea:"", users:"", never:"", help:false };
+    render(true);
+  }
+  document.getElementById("reset").addEventListener("click", resetAll);
+
+  load();
+  render(false);
+})();
+</script>
+</body>
+</html>
