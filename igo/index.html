@@ -308,18 +308,57 @@
   // business: ["alle"] oder Teilmenge von projekt/vertrieb
   // needsLeads: null (egal), true, false
   var TASKS = [
+    // Telefon
     {channels:["telefon"], business:["alle"], needsLeads:true, minTime:5,
       text:"Ruf heute eine einzige Person aus deiner Liste an. Frag nur, wie es ihr gerade geht – kein Verkaufsgespräch nötig."},
     {channels:["telefon"], business:["alle"], needsLeads:false, minTime:15,
       text:"Ruf eine Person an, mit der du länger nicht gesprochen hast, und frag einfach, was bei ihr gerade ansteht."},
     {channels:["telefon"], business:["vertrieb"], needsLeads:null, minTime:15,
       text:"Wähle eine Nummer aus deiner Liste und stell dich kurz vor. Mehr nicht – der erste Kontakt zählt."},
+    {channels:["telefon"], business:["alle"], needsLeads:true, minTime:5,
+      text:"Ruf eine frühere Kundin oder einen früheren Kunden an, nur um kurz Hallo zu sagen und zu fragen, wie es läuft."},
+    {channels:["telefon"], business:["projekt"], needsLeads:true, minTime:15,
+      text:"Ruf eine laufende Kundin oder einen laufenden Kunden an und frag, ob im aktuellen Projekt alles passt."},
+    {channels:["telefon"], business:["alle"], needsLeads:false, minTime:30,
+      text:"Nimm dir 30 Minuten und ruf drei mögliche Kontakte nacheinander an, nur um dich kurz vorzustellen."},
+    {channels:["telefon"], business:["vertrieb"], needsLeads:false, minTime:15,
+      text:"Ruf einen kalten Kontakt aus deiner Liste an und frag zuerst, ob gerade ein guter Moment zum Reden ist."},
+    {channels:["telefon"], business:["alle"], needsLeads:null, minTime:5,
+      text:"Ruf jemanden an, der dir kürzlich geholfen oder dich empfohlen hat, und bedank dich einfach."},
+    {channels:["telefon"], business:["alle"], needsLeads:true, minTime:15,
+      text:"Ruf eine Kundin oder einen Kunden an und frag nach ehrlichem Feedback zum letzten Auftrag."},
+    {channels:["telefon"], business:["projekt"], needsLeads:null, minTime:30,
+      text:"Ruf eine frühere Kundin oder einen früheren Kunden an und biete ein kurzes, unverbindliches Gespräch über den aktuellen Bedarf an."},
+    {channels:["telefon"], business:["alle"], needsLeads:false, minTime:5,
+      text:"Ruf die nächste Person auf deiner Liste an. Meldet sie sich nicht, hinterlass eine freundliche, kurze Nachricht."},
+    {channels:["telefon"], business:["alle"], needsLeads:true, minTime:5,
+      text:"Ruf eine Person an, die schon mal Interesse gezeigt hat, und frag, ob sich seitdem etwas verändert hat."},
+    // Netzwerken & Events
     {channels:["netzwerk"], business:["alle"], needsLeads:null, minTime:5,
       text:"Schau dir eine Netzwerkveranstaltung oder Gruppe in deiner Nähe oder online an, ohne dich anzumelden."},
     {channels:["netzwerk"], business:["alle"], needsLeads:null, minTime:15,
       text:"Melde dich für eine Netzwerkveranstaltung oder ein Branchentreffen an, egal ob online oder vor Ort."},
     {channels:["netzwerk"], business:["alle"], needsLeads:true, minTime:5,
       text:"Schreib einer Kontaktperson von der letzten Veranstaltung eine kurze Nachricht – nur ein freundliches Hallo."},
+    {channels:["netzwerk"], business:["alle"], needsLeads:null, minTime:5,
+      text:"Tritt einer Online-Gruppe oder einem Forum bei, in der sich deine Zielgruppe aufhält."},
+    {channels:["netzwerk"], business:["alle"], needsLeads:true, minTime:15,
+      text:"Schlage einer Person aus deinem Netzwerk einen kurzen Kaffee oder Call zum Wiedersehen vor."},
+    {channels:["netzwerk"], business:["vertrieb"], needsLeads:null, minTime:15,
+      text:"Kommentiere drei Beiträge von Personen aus deiner Zielgruppe ehrlich und hilfreich."},
+    {channels:["netzwerk"], business:["alle"], needsLeads:null, minTime:30,
+      text:"Besuch diese Woche eine Netzwerkveranstaltung, online oder vor Ort."},
+    {channels:["netzwerk"], business:["projekt"], needsLeads:true, minTime:5,
+      text:"Gratuliere einer Kontaktperson zu einem Jubiläum oder einer neuen Position – ganz ohne Anliegen."},
+    {channels:["netzwerk"], business:["alle"], needsLeads:false, minTime:15,
+      text:"Folge drei Personen oder Organisationen aus deiner Zielbranche."},
+    {channels:["netzwerk"], business:["alle"], needsLeads:null, minTime:5,
+      text:"Aktualisiere dein Profilbild oder einen Satz deiner Kurzbeschreibung auf einem Netzwerk, das du nutzt."},
+    {channels:["netzwerk"], business:["alle"], needsLeads:true, minTime:5,
+      text:"Stell zwei Menschen aus deinem Netzwerk einander vor, die sich gegenseitig helfen könnten."},
+    {channels:["netzwerk"], business:["alle"], needsLeads:null, minTime:15,
+      text:"Überleg dir eine offene Frage, die du bei der nächsten Veranstaltung stellen könntest."},
+    // Schreiben
     {channels:["schreiben"], business:["alle"], needsLeads:true, minTime:5,
       text:"Schreib einer ehemaligen Kundin oder einem ehemaligen Kunden eine kurze Nachricht und frag, wie es läuft."},
     {channels:["schreiben"], business:["alle"], needsLeads:false, minTime:5,
@@ -328,6 +367,23 @@
       text:"Schreib eine kurze Nachfrage an einen laufenden oder abgeschlossenen Auftrag: ob es weiteren Bedarf gibt."},
     {channels:["schreiben"], business:["vertrieb"], needsLeads:null, minTime:5,
       text:"Schreib einem offenen Kontakt aus deiner Liste eine kurze, freundliche Nachricht."},
+    {channels:["schreiben"], business:["alle"], needsLeads:true, minTime:5,
+      text:"Schick eine kurze Dankesnachricht an jemanden, der dir kürzlich geholfen hat."},
+    {channels:["schreiben"], business:["alle"], needsLeads:false, minTime:15,
+      text:"Schreib eine Nachricht an eine mögliche Kundin oder einen möglichen Kunden, den du noch nicht kennst."},
+    {channels:["schreiben"], business:["projekt"], needsLeads:true, minTime:5,
+      text:"Frag eine laufende Kundin oder einen laufenden Kunden kurz per Nachricht, ob gerade alles passt."},
+    {channels:["schreiben"], business:["alle"], needsLeads:null, minTime:5,
+      text:"Beantworte eine Nachricht oder einen Kommentar, den du schon länger vor dir herschiebst."},
+    {channels:["schreiben"], business:["vertrieb"], needsLeads:false, minTime:15,
+      text:"Schreib drei neuen Kontakten eine kurze Nachricht, in der du dein Angebot in einem Satz vorstellst."},
+    {channels:["schreiben"], business:["alle"], needsLeads:true, minTime:30,
+      text:"Schreib fünf ehemaligen Kundinnen und Kunden eine persönliche Nachricht und frag, wie es ihnen geht."},
+    {channels:["schreiben"], business:["alle"], needsLeads:null, minTime:15,
+      text:"Entwirf eine kurze Nachrichten-Vorlage, die du künftig für die erste Kontaktaufnahme wiederverwenden kannst."},
+    {channels:["schreiben"], business:["projekt"], needsLeads:false, minTime:15,
+      text:"Schreib eine mögliche Kundin oder einen möglichen Kunden an, den du recherchiert hast, mit einem konkreten Grund für die Nachricht."},
+    // Unabhängig vom Kanal
     {channels:["alle"], business:["projekt"], needsLeads:true, minTime:5,
       text:"Frag bei einem bestehenden Kunden nach, ob es ein weiteres Thema gibt, bei dem du helfen kannst."},
     {channels:["alle"], business:["projekt"], needsLeads:null, minTime:5,
@@ -341,7 +397,21 @@
     {channels:["alle"], business:["alle"], needsLeads:null, minTime:15,
       text:"Überleg dir eine Person, die du schon lange mal wieder ansprechen wolltest, und plane, wie du es diese Woche tust."},
     {channels:["alle"], business:["alle"], needsLeads:null, minTime:5,
-      text:"Notiere dir drei Dinge, die deine Kundinnen und Kunden an dir schätzen – für den nächsten ersten Kontakt."}
+      text:"Notiere dir drei Dinge, die deine Kundinnen und Kunden an dir schätzen – für den nächsten ersten Kontakt."},
+    {channels:["alle"], business:["alle"], needsLeads:null, minTime:5,
+      text:"Schau dir deine letzten fünf Kundinnen und Kunden an und notiere, was sie gemeinsam haben."},
+    {channels:["alle"], business:["vertrieb"], needsLeads:null, minTime:5,
+      text:"Schreib in einem Satz auf, wer deine ideale Kundin oder dein idealer Kunde ist."},
+    {channels:["alle"], business:["alle"], needsLeads:null, minTime:5,
+      text:"Trag dir für morgen schon jetzt eine kleine Akquise-Aufgabe in den Kalender ein."},
+    {channels:["alle"], business:["projekt"], needsLeads:true, minTime:15,
+      text:"Frag eine laufende Kundin oder einen laufenden Kunden, ob sie oder er noch jemanden kennt, dem du helfen könntest."},
+    {channels:["alle"], business:["alle"], needsLeads:null, minTime:15,
+      text:"Lies einen alten Nachrichtenverlauf, den du nie zu Ende gebracht hast, und entscheide den nächsten Schritt."},
+    {channels:["alle"], business:["alle"], needsLeads:null, minTime:30,
+      text:"Blockiere dir diese Woche 30 Minuten extra für Akquise und trag sie fest in deinen Kalender ein."},
+    {channels:["alle"], business:["alle"], needsLeads:false, minTime:5,
+      text:"Recherchiere eine mögliche Kundin oder einen möglichen Kunden und notiere zwei Fakten dazu."}
   ];
 
   function matchTask(t, p){
@@ -394,6 +464,146 @@
       intro:"Zufriedene Kunden sind oft der leichteste Weg zu neuen – man muss nur fragen.",
       prompt:function(p){
         return "Formuliere mir eine kurze, unaufdringliche Nachricht an eine zufriedene Kundin oder einen zufriedenen Kunden, in der ich frage, ob sie oder er mich weiterempfehlen würde. Ton: dankbar, nicht fordernd.";
+      }
+    },
+    {
+      title:"Dankesnachricht mit Stil",
+      intro:"Eine gute Dankesnachricht bleibt im Kopf – lass sie dir passend formulieren.",
+      prompt:function(p){
+        return "Formuliere mir eine warmherzige, kurze Dankesnachricht (max. 3 Sätze) an eine Kundin oder einen Kunden, die/der mir kürzlich positives Feedback gegeben hat. Anlass: [hier kurz ergänzen]. Ton: ehrlich, nicht übertrieben.";
+      }
+    },
+    {
+      title:"Portfolio schärfen",
+      intro:"Ein Referenz-Text liest sich oft holpriger, als er sein müsste – lass ihn glätten.",
+      prompt:function(p){
+        return "Überarbeite mir den folgenden Absatz aus meinem Portfolio bzw. meiner Referenzliste, damit er klarer und überzeugender klingt, ohne zu übertreiben: [hier deinen Text einfügen].";
+      }
+    },
+    {
+      title:"Fragen fürs Erstgespräch",
+      intro:"Gute Fragen nehmen dem Erstgespräch den Verkaufsdruck.",
+      prompt:function(p){
+        return "Gib mir fünf offene, sympathische Fragen, die ich in einem ersten Gespräch mit einer möglichen Kundin oder einem möglichen Kunden stellen kann, um ihren Bedarf zu verstehen. Mein Angebot: [hier kurz ergänzen].";
+      }
+    },
+    {
+      title:"Freundlich auf ein Nein reagieren",
+      intro:"Ein Nein muss nicht das Ende sein – eine gute Antwort hält die Tür offen.",
+      prompt:function(p){
+        return "Formuliere mir eine freundliche, kurze Antwort auf eine Absage von einer möglichen Kundin oder einem möglichen Kunden, die die Tür für später offen hält, ohne aufdringlich zu wirken.";
+      }
+    },
+    {
+      title:"Angebot auf den Punkt bringen",
+      intro:"Ein langer Angebotstext lässt sich oft auf das Wesentliche kürzen.",
+      prompt:function(p){
+        return "Fasse mir den folgenden Angebotstext in maximal fünf knappen Sätzen zusammen, klar und ohne Fachjargon: [hier deinen Text einfügen].";
+      }
+    },
+    {
+      title:"Signatur mit Klarheit",
+      intro:"Eine gute E-Mail-Signatur erklärt in einem Satz, was du tust.",
+      prompt:function(p){
+        return "Formuliere mir drei kurze Varianten für eine E-Mail-Signaturzeile, die in einem Satz erklärt, was ich anbiete und für wen. Mein Angebot: [hier kurz ergänzen]. Zielgruppe: [hier kurz ergänzen].";
+      }
+    },
+    {
+      title:"Testimonial erbitten",
+      intro:"Ein kurzes Zitat von einer zufriedenen Kundin wirkt oft mehr als jede Eigenwerbung.",
+      prompt:function(p){
+        return "Formuliere mir eine kurze, unaufdringliche Nachricht an eine zufriedene Kundin oder einen zufriedenen Kunden, in der ich um ein kurzes schriftliches Zitat (Testimonial) für meine Website bitte.";
+      }
+    },
+    {
+      title:"Zielgruppe schärfen",
+      intro:"Je klarer die Zielgruppe, desto leichter die Ansprache.",
+      prompt:function(p){
+        return "Hilf mir, meine ideale Kundin oder meinen idealen Kunden in zwei bis drei Sätzen klar zu beschreiben. Stichworte zu meinem Angebot und bisherigen Kunden: [hier kurz ergänzen].";
+      }
+    },
+    {
+      title:"Auf Einwände reagieren",
+      intro:"Auf den häufigsten Einwand eine ruhige Antwort parat zu haben, nimmt Druck raus.",
+      prompt:function(p){
+        return "Formuliere mir eine ruhige, selbstbewusste Antwort auf folgenden Einwand, den ich häufig höre: [Einwand hier ergänzen, z. B. 'das ist mir zu teuer'].";
+      }
+    },
+    {
+      title:"Kurzprofil fürs Netzwerk",
+      intro:"Ein gutes Kurzprofil macht es anderen leicht, dich einzuordnen.",
+      prompt:function(p){
+        return "Formuliere mir eine kurze Profilbeschreibung (ca. 3-4 Sätze) für LinkedIn oder Xing, die zeigt, was ich anbiete und wem ich damit helfe. Stichworte: [hier kurz ergänzen].";
+      }
+    },
+    {
+      title:"Freundlich nachfassen",
+      intro:"Ein Angebot ohne Antwort muss nicht unangenehm nachgefasst werden.",
+      prompt:function(p){
+        return "Formuliere mir eine kurze, freundliche Nachfass-Nachricht zu einem Angebot, auf das ich noch keine Antwort bekommen habe. Ton: locker, ohne Druck.";
+      }
+    },
+    {
+      title:"Ideen für einen Beitrag",
+      intro:"Manchmal fehlt nur der erste Gedanke für einen guten Beitrag.",
+      prompt:function(p){
+        return "Gib mir drei Themenideen für einen kurzen Beitrag (LinkedIn oder Blog) aus meinem Arbeitsalltag. Mein Bereich: [hier kurz ergänzen].";
+      }
+    },
+    {
+      title:"Sammel-Nachricht an frühere Kunden",
+      intro:"Eine ehrliche Frage an mehrere frühere Kunden gleichzeitig kostet wenig und bringt oft was.",
+      prompt:function(p){
+        return "Formuliere mir eine kurze, persönlich wirkende Nachricht, die ich an mehrere frühere Kundinnen und Kunden einzeln verschicken kann, um zu fragen, ob aktuell Bedarf besteht.";
+      }
+    },
+    {
+      title:"Elevator Pitch in drei Längen",
+      intro:"Je nach Situation brauchst du eine andere Länge deiner Vorstellung.",
+      prompt:function(p){
+        return "Formuliere mir meinen Elevator Pitch in drei Längen: 10 Sekunden, 30 Sekunden und 60 Sekunden. Mein Angebot: [hier kurz ergänzen]. Zielgruppe: [hier kurz ergänzen].";
+      }
+    },
+    {
+      title:"Sanfte Erinnerung",
+      intro:"'Meld dich nochmal' ist leicht gesagt und leicht vergessen – eine kleine Erinnerung hilft.",
+      prompt:function(p){
+        return "Formuliere mir eine kurze, entspannte Erinnerungsnachricht an eine Person, die gesagt hat, ich solle mich später nochmal melden.";
+      }
+    },
+    {
+      title:"Kaltakquise-Nachricht",
+      intro:"Eine gute Kaltnachricht ist kurz, konkret und nicht aufdringlich.",
+      prompt:function(p){
+        return "Formuliere mir eine kurze Erstnachricht an eine mir unbekannte Person, die zu meiner Zielgruppe passt, ohne aufdringlich zu wirken. Mein Angebot: [hier kurz ergänzen]. Zielgruppe: [hier kurz ergänzen].";
+      }
+    },
+    {
+      title:"Nach dem Event melden",
+      intro:"Der Tag nach einer Veranstaltung ist ideal für eine kurze Nachricht.",
+      prompt:function(p){
+        return "Formuliere mir eine kurze Nachricht an eine Person, die ich bei einer Veranstaltung kennengelernt habe, mit Bezug auf unser Gespräch: [worüber ihr gesprochen habt, hier ergänzen].";
+      }
+    },
+    {
+      title:"Preis selbstbewusst nennen",
+      intro:"Den eigenen Preis zu nennen, fühlt sich oft unangenehmer an, als es sein muss.",
+      prompt:function(p){
+        return "Formuliere mir zwei bis drei Sätze, mit denen ich meinen Preis oder Stundensatz selbstbewusst und ohne Rechtfertigung nennen kann. Mein Preis/Stundensatz: [hier kurz ergänzen].";
+      }
+    },
+    {
+      title:"Warme Vorstellung erbitten",
+      intro:"Eine persönliche Vorstellung durch jemand anderen öffnet oft mehr Türen als ein Kaltkontakt.",
+      prompt:function(p){
+        return "Formuliere mir eine kurze Nachricht an eine zufriedene Kundin oder einen zufriedenen Kunden, in der ich frage, ob sie oder er mich einer bestimmten Person vorstellen könnte. Person/Firma: [hier kurz ergänzen].";
+      }
+    },
+    {
+      title:"Update für dein Netzwerk",
+      intro:"Ein kurzes Lebenszeichen hält dich im Kopf deines Netzwerks, ganz ohne Verkaufsabsicht.",
+      prompt:function(p){
+        return "Formuliere mir eine kurze, unaufgeregte Update-Nachricht an mein Netzwerk darüber, woran ich gerade arbeite. Stichworte: [hier kurz ergänzen].";
       }
     }
   ];
