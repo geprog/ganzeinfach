@@ -33,32 +33,48 @@
 </script>
 <style>
   :root{
-    --bg:#FBF3E3;
+    --bg:#FFFBF2;
     --surface:#FFFFFF;
-    --surface-2:#F7ECD8;
-    --ink:#16303A;
-    --muted:#5C6B6E;
-    --line:#E4D7BD;
-    --accent:#236462;
-    --accent-soft:#DCEEEC;
-    --btn-bg:#16303A;
+    --surface-2:#F2EFFB;
+    --ink:#3A2E59;
+    --muted:#6A5D86;
+    --line:#E3DEF5;
+    --accent:#0B6F64;
+    --accent-soft:#D7F0EC;
+    --btn-bg:#0B6F64;
     --btn-fg:#FFFFFF;
-    --shadow:0 1px 2px rgba(22,33,42,.06), 0 14px 40px rgba(22,33,42,.09);
+    --shadow:0 1px 2px rgba(58,46,89,.06), 0 14px 36px rgba(58,46,89,.08);
     --radius:26px;
+    --day-input-bg:rgba(255,255,255,.65);
+    --day0-bg:#DCEEFC; --day0-line:#8FC6EE;
+    --day1-bg:#E1F6DE; --day1-line:#8FD29B;
+    --day2-bg:#FFF4C2; --day2-line:#E8C23E;
+    --day3-bg:#FFE3EE; --day3-line:#F2A3C3;
+    --day4-bg:#ECE0FB; --day4-line:#C3A3EE;
+    --day5-bg:#FFE9D6; --day5-line:#F0BE8B;
+    --day6-bg:#DCF5F0; --day6-line:#86D2C2;
   }
   @media (prefers-color-scheme: dark){
     :root{
-      --bg:#1B1912;
-      --surface:#241F16;
-      --surface-2:#2A2419;
-      --ink:#F0E7D6;
-      --muted:#C9BBA0;
-      --line:#3A331F;
-      --accent:#7FC9C6;
-      --accent-soft:#1F3A38;
-      --btn-bg:#7FC9C6;
-      --btn-fg:#1B1912;
-      --shadow:0 1px 2px rgba(0,0,0,.4), 0 14px 40px rgba(0,0,0,.35);
+      --bg:#201A33;
+      --surface:#2A2347;
+      --surface-2:#332B57;
+      --ink:#F2EEFA;
+      --muted:#B6ACD6;
+      --line:#463C73;
+      --accent:#4FD3C4;
+      --accent-soft:#1F4A45;
+      --btn-bg:#4FD3C4;
+      --btn-fg:#1B1333;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 14px 36px rgba(0,0,0,.35);
+      --day0-bg:#1F3A5C; --day0-line:#4F8DC6;
+      --day1-bg:#1E3F2A; --day1-line:#4FAE6D;
+      --day2-bg:#42350F; --day2-line:#E0B83C;
+      --day3-bg:#4A2238; --day3-line:#E36FA0;
+      --day4-bg:#392A5C; --day4-line:#B48CEA;
+      --day5-bg:#4A3420; --day5-line:#E8A862;
+      --day6-bg:#1E4540; --day6-line:#4FCBB4;
+      --day-input-bg:rgba(0,0,0,.25);
     }
   }
   *{box-sizing:border-box}
@@ -153,6 +169,16 @@
   .day-details summary h3{display:inline-block;margin:0}
   .day-details dl{margin:14px 0 0;display:grid;grid-template-columns:auto 1fr;gap:8px 16px}
   .day-details dt{font-weight:800;color:var(--muted)}
+
+  /* Eine Farbe pro Wochentag */
+  .day-c0{background:var(--day0-bg);border-color:var(--day0-line)}
+  .day-c1{background:var(--day1-bg);border-color:var(--day1-line)}
+  .day-c2{background:var(--day2-bg);border-color:var(--day2-line)}
+  .day-c3{background:var(--day3-bg);border-color:var(--day3-line)}
+  .day-c4{background:var(--day4-bg);border-color:var(--day4-line)}
+  .day-c5{background:var(--day5-bg);border-color:var(--day5-line)}
+  .day-c6{background:var(--day6-bg);border-color:var(--day6-line)}
+  .day-card input[type="text"]{background:var(--day-input-bg)}
   .day-details dd{margin:0}
 
   /* Checklisten (Packliste / Einkaufsliste) */
@@ -209,8 +235,8 @@
           <ellipse cx="80" cy="150" rx="26" ry="23" fill="#FBF3E3" opacity=".85"/>
           <ellipse class="paw paw-l" cx="58" cy="168" rx="14" ry="9" fill="#E3A76F"/>
           <ellipse class="paw paw-r" cx="102" cy="168" rx="14" ry="9" fill="#E3A76F"/>
-          <path d="M46 112 L114 112 L94 138 L66 138 Z" fill="#236462"/>
-          <circle cx="80" cy="113" r="7" fill="#236462"/>
+          <path d="M46 112 L114 112 L94 138 L66 138 Z" fill="#0B6F64"/>
+          <circle cx="80" cy="113" r="7" fill="#0B6F64"/>
           <circle cx="72" cy="124" r="3" fill="#FFFFFF" opacity=".6"/>
           <circle cx="88" cy="124" r="3" fill="#FFFFFF" opacity=".6"/>
           <path class="ear ear-l" d="M46 46 C 20 40, 14 78, 30 104 C 44 96, 50 64, 46 46 Z" fill="#B9793E"/>
@@ -427,6 +453,7 @@
   }
 
   function weekdayFor(i){ return WEEKDAYS[(state.startTag + i) % 7]; }
+  function dayColorClass(i){ return "day-c" + ((state.startTag + i) % 7); }
 
   function renderToolbar(){
     if(!state.eingerichtet){ elToolbar.innerHTML = ""; return; }
@@ -474,14 +501,14 @@
       return '<div class="field"><label for="' + id + '">' + label + '</label>' +
         '<input type="text" id="' + id + '" data-day="' + i + '" data-feld="' + feld + '" value="' + escapeHtml(tag[feld]) + '"></div>';
     }).join("");
-    return '<section class="day-card"><h3>Tag ' + (i+1) + ' – ' + weekdayFor(i) + '</h3><div class="day-grid">' + felderHtml + '</div></section>';
+    return '<section class="day-card ' + dayColorClass(i) + '"><h3>Tag ' + (i+1) + ' – ' + weekdayFor(i) + '</h3><div class="day-grid">' + felderHtml + '</div></section>';
   }
   function dayCardView(tag, i){
     var rows = FELDER.map(function(f){
       var feld = f[0], label = f[1];
       return "<dt>" + label + "</dt><dd>" + (tag[feld] ? escapeHtml(tag[feld]) : "–") + "</dd>";
     }).join("");
-    return '<details class="day-details"><summary><h3>Tag ' + (i+1) + ' – ' + weekdayFor(i) + '</h3></summary><dl>' + rows + '</dl></details>';
+    return '<details class="day-details ' + dayColorClass(i) + '"><summary><h3>Tag ' + (i+1) + ' – ' + weekdayFor(i) + '</h3></summary><dl>' + rows + '</dl></details>';
   }
 
   function renderPlan(){
