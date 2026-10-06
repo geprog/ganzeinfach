@@ -131,6 +131,7 @@
   .card.swap{animation:pop .25s ease-out}
   h2{font-size:1.5rem;line-height:1.2;margin:0 0 12px;letter-spacing:-.01em}
   h3{font-size:1.1rem;margin:20px 0 10px;letter-spacing:-.005em}
+  h4{font-size:.98rem;margin:16px 0 8px;color:var(--muted);letter-spacing:-.005em}
   p{margin:0 0 12px;max-width:62ch}
   a{color:var(--accent);font-weight:700;text-underline-offset:3px}
   strong{font-weight:800}
@@ -288,16 +289,16 @@
 
   var AKTIVITAETS_POSTEN = [
     {stichworte:["schwimm","baden","pool","freibad","see","meer"], posten:["Badesachen","Badehandtuch","Sonnencreme","Badeschuhe"]},
-    {stichworte:["strand"], posten:["Badesachen","Handtuch","Sonnencreme","Eimer und Schaufel","Drachen"]},
-    {stichworte:["surf"], posten:["Badesachen","Surf-Shirt (Lycra)","Sonnencreme","Handtuch"]},
+    {stichworte:["strand"], posten:["Badesachen","Badehandtuch","Sonnencreme","Eimer und Schaufel","Drachen"]},
+    {stichworte:["surf"], posten:["Surfsachen","Badehandtuch","Sonnencreme"]},
     {stichworte:["schnorchel","tauch"], posten:["Taucherbrille oder Schnorchel","Badesachen","Badeschuhe"]},
     {stichworte:["segel","boot","kanu","kajak"], posten:["Wechselkleidung","Wasserfeste Tasche"]},
     {stichworte:["fahrrad","radtour","bike"], posten:["Fahrradhelm","Sonnenbrille","Trinkflasche"]},
     {stichworte:["mountainbike","mtb"], posten:["Fahrradhelm","Feste Handschuhe","Trinkflasche"]},
     {stichworte:["wander","bergtour","huette"], posten:["Wanderschuhe","Rucksack","Regenjacke","Trinkflasche","Sonnenhut"]},
-    {stichworte:["kletter"], posten:["Feste Schuhe","Lange Hose","Handschuhe"]},
+    {stichworte:["kletter"], posten:["Kletterausrüstung","Feste Schuhe","Lange Hose"]},
     {stichworte:["berg","gipfel"], posten:["Wanderschuhe","Warme Jacke","Sonnenbrille"]},
-    {stichworte:["ski","schnee","rodel","schlitten"], posten:["Skisachen oder Schneeanzug","Handschuhe","Mütze","Skibrille"]},
+    {stichworte:["ski","schnee","rodel","schlitten"], posten:["Skisachen","Handschuhe","Mütze","Skibrille"]},
     {stichworte:["reit","pferd","ponyhof"], posten:["Feste Schuhe","Lange Hose"]},
     {stichworte:["forsch","entdeck","insekt"], posten:["Lupe","Kleines Becherglas","Matschhose"]},
     {stichworte:["camp","zelt","lagerfeuer"], posten:["Taschenlampe","Schlafsack","Warme Jacke","Mückenspray"]},
@@ -307,26 +308,50 @@
     {stichworte:["picknick"], posten:["Picknickdecke","Trinkflasche"]},
     {stichworte:["museum","besichtig","stadtfuehr"], posten:["Bequeme Schuhe","Kleine Tasche"]},
     {stichworte:["fussball","sport","ballspiel"], posten:["Sportschuhe","Sportkleidung","Trinkflasche"]},
-    {stichworte:["regen","drinnen"], posten:["Lieblingsbuch oder Kartenspiel","Wasserfeste Jacke"]}
+    {stichworte:["regen","drinnen"], posten:["Regenjacke","Lieblingsbuch oder Kartenspiel"]}
   ];
 
   var JAHRESZEIT_POSTEN = {
-    fruehling:["Regenjacke","Gummistiefel","Pullover zum Übereinanderziehen"],
+    fruehling:["Regenjacke","Gummistiefel"],
     sommer:["Sonnencreme","Sonnenhut","Kurze Hosen","Badesachen"],
-    herbst:["Regenjacke","Gummistiefel","Warmer Pullover"],
-    winter:["Dicke Jacke","Mütze","Handschuhe","Schal"]
+    herbst:["Regenjacke","Gummistiefel"],
+    winter:["Warme Jacke","Mütze","Handschuhe","Schal"]
   };
 
+  /* Alles hier wird auf jeden Fall gebraucht. Kleidung wächst nicht 1:1 mit
+     den Reisetagen, sondern mit Obergrenzen, weil auf längeren Reisen
+     zwischendurch Wäsche gewaschen wird. */
   function basisPosten(tage){
     return [
-      {text:"Unterhosen", menge:tage+1},
-      {text:"Socken", menge:tage+1},
-      {text:"T-Shirts", menge:tage},
-      {text:"Schlafanzug", menge:Math.max(1, Math.ceil(tage/3))},
+      {text:"Unterhosen", menge:Math.min(tage + 1, 8)},
+      {text:"Socken", menge:Math.min(tage + 1, 8)},
+      {text:"T-Shirts", menge:Math.ceil(tage * 2 / 3)},
+      {text:"Hosen", menge:Math.min(Math.ceil(tage / 4) + 1, 4)},
+      {text:"Pullover", menge:Math.min(Math.ceil(tage / 7) + 1, 3)},
+      {text:"Schlafanzug", menge:Math.min(Math.ceil(tage / 3), 2)},
       {text:"Zahnbürste und Zahnpasta", menge:1},
-      {text:"Handtuch", menge:1}
+      {text:"Duschbad oder Shampoo", menge:1},
+      {text:"Creme (z. B. Wund- oder Pflegecreme)", menge:1},
+      {text:"Bürste oder Kamm", menge:1},
+      {text:"Taschentücher", menge:1},
+      {text:"Pflaster (kleines Erste-Hilfe-Set)", menge:1},
+      {text:"Handtuch", menge:1},
+      {text:"Aufladekabel", menge:1},
+      {text:"Spielsachen für unterwegs", menge:1},
+      {text:"Spiele oder Bücher für unterwegs", menge:1}
     ];
   }
+
+  /* Hängt vom Kind und vom Urlaub ab, deshalb als eigene, unverbindliche Liste. */
+  var VIELLEICHT_MITNEHMEN = [
+    "Kuscheltier",
+    "Nachtlicht",
+    "Kopfhörer",
+    "Kamera",
+    "Snacks für die Fahrt",
+    "Medikamente (falls regelmäßig gebraucht)",
+    "Ausweis oder Reisepass (falls nötig)"
+  ];
 
   /* ---------- Fuzzy-Stichwortsuche (ohne externe Bibliothek) ---------- */
   function levenshtein(a, b){
@@ -379,12 +404,24 @@
     });
     return items;
   }
+  function ohneBereitsGenannte(texte, gesehen){
+    var out = [];
+    texte.forEach(function(text){
+      var key = text.trim().toLowerCase();
+      if(gesehen[key]) return;
+      gesehen[key] = true;
+      out.push(text);
+    });
+    return out;
+  }
   function computePackliste(state){
-    return {
-      grund: basisPosten(state.tage),
-      jahreszeit: JAHRESZEIT_POSTEN[state.jahreszeit] || [],
-      aktivitaeten: computeAktivitaetsPosten(state)
-    };
+    var grund = basisPosten(state.tage);
+    var gesehen = {};
+    grund.forEach(function(item){ gesehen[item.text.trim().toLowerCase()] = true; });
+    var jahreszeit = ohneBereitsGenannte(JAHRESZEIT_POSTEN[state.jahreszeit] || [], gesehen);
+    var aktivitaeten = ohneBereitsGenannte(computeAktivitaetsPosten(state), gesehen);
+    var vielleicht = ohneBereitsGenannte(VIELLEICHT_MITNEHMEN, gesehen);
+    return { grund: grund, jahreszeit: jahreszeit, aktivitaeten: aktivitaeten, vielleicht: vielleicht };
   }
   function computeEinkaufsliste(state){
     function sammeln(feld){
@@ -524,7 +561,7 @@
   function liItems(arr, withMenge){
     if(!arr.length) return "";
     return arr.map(function(item){
-      var text = withMenge ? (item.text + " (" + item.menge + "×)") : item;
+      var text = withMenge ? (item.menge > 1 ? item.text + " (" + item.menge + "×)" : item.text) : item;
       return '<li><label class="check"><input type="checkbox"> ' + escapeHtml(text) + '</label></li>';
     }).join("");
   }
@@ -535,9 +572,14 @@
       '<section id="packlisteSection">' +
       "<h2>Packliste</h2>" +
       "<p>Für " + state.tage + (state.tage === 1 ? " Tag" : " Tage") + " im " + SEASON_LABELS[state.jahreszeit] + ".</p>" +
-      "<h3>Grundausstattung</h3><ul class=\"checklist\">" + liItems(p.grund, true) + "</ul>" +
-      "<h3>Für die Jahreszeit</h3><ul class=\"checklist\">" + (p.jahreszeit.length ? liItems(p.jahreszeit, false) : "<li>Keine besonderen Posten.</li>") + "</ul>" +
-      "<h3>Für eure Aktivitäten</h3><ul class=\"checklist\">" + (p.aktivitaeten.length ? liItems(p.aktivitaeten, false) : "<li>Noch keine passenden Aktivitäten eingetragen – trag welche ein, dann ergänzt Perry hier passende Sachen.</li>") + "</ul>" +
+      "<p>Die Mengen wachsen nicht 1:1 mit den Tagen – bei längeren Reisen wird zwischendurch einfach Wäsche gewaschen.</p>" +
+      "<h3>Auf jeden Fall einpacken</h3>" +
+      "<h4>Grundausstattung</h4><ul class=\"checklist\">" + liItems(p.grund, true) + "</ul>" +
+      "<h4>Für die Jahreszeit</h4><ul class=\"checklist\">" + (p.jahreszeit.length ? liItems(p.jahreszeit, false) : "<li>Keine besonderen Posten.</li>") + "</ul>" +
+      "<h4>Für eure Aktivitäten</h4><ul class=\"checklist\">" + (p.aktivitaeten.length ? liItems(p.aktivitaeten, false) : "<li>Noch keine passenden Aktivitäten eingetragen – trag welche ein, dann ergänzt Perry hier passende Sachen.</li>") + "</ul>" +
+      "<h3>Vielleicht mitnehmen</h3>" +
+      "<p>Muss nicht sein, hilft aber manchmal – je nach Kind und Urlaub.</p>" +
+      "<ul class=\"checklist\">" + liItems(p.vielleicht, false) + "</ul>" +
       '<div class="actions no-print"><span class="spacer"></span><button type="button" class="btn primary" data-action="print">Drucken oder als PDF speichern</button></div>' +
       '</section>';
   }
