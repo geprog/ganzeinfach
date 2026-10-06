@@ -1,0 +1,590 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Perry: der Urlaubsplaner für Kinder</title>
+<meta name="description" content="Perry hilft Kindern, den Urlaub zu planen: Essen und Aktivitäten pro Tag eintragen, danach gibt es automatisch eine Packliste und Einkaufsliste. Ohne Anmeldung, ohne Tracking, alles bleibt auf diesem Gerät.">
+<link rel="canonical" href="https://ganzeinfach.geprog.com/perry/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="GEPROG">
+<meta property="og:title" content="Perry: der Urlaubsplaner für Kinder">
+<meta property="og:description" content="Perry hilft Kindern, den Urlaub zu planen: Essen und Aktivitäten pro Tag eintragen, danach gibt es automatisch eine Packliste und Einkaufsliste.">
+<meta property="og:url" content="https://ganzeinfach.geprog.com/perry/">
+<meta property="og:locale" content="de_DE">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Perry: der Urlaubsplaner für Kinder">
+<meta name="twitter:description" content="Perry hilft Kindern, den Urlaub zu planen: Essen und Aktivitäten pro Tag eintragen, danach gibt es automatisch eine Packliste und Einkaufsliste.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Perry",
+  "url": "https://ganzeinfach.geprog.com/perry/",
+  "description": "Urlaubsplaner für Kinder: Essen und Aktivitäten pro Tag eintragen, automatische Packliste und Einkaufsliste, ganz ohne Anmeldung und Tracking.",
+  "applicationCategory": "LifestyleApplication",
+  "operatingSystem": "Jeder Webbrowser",
+  "inLanguage": "de",
+  "isAccessibleForFree": true,
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"},
+  "publisher": {"@type": "Organization", "name": "GEPROG GmbH", "url": "https://geprog.com/"}
+}
+</script>
+<style>
+  :root{
+    --bg:#FBF3E3;
+    --surface:#FFFFFF;
+    --surface-2:#F7ECD8;
+    --ink:#16303A;
+    --muted:#5C6B6E;
+    --line:#E4D7BD;
+    --accent:#236462;
+    --accent-soft:#DCEEEC;
+    --btn-bg:#16303A;
+    --btn-fg:#FFFFFF;
+    --shadow:0 1px 2px rgba(22,33,42,.06), 0 14px 40px rgba(22,33,42,.09);
+    --radius:26px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#1B1912;
+      --surface:#241F16;
+      --surface-2:#2A2419;
+      --ink:#F0E7D6;
+      --muted:#C9BBA0;
+      --line:#3A331F;
+      --accent:#7FC9C6;
+      --accent-soft:#1F3A38;
+      --btn-bg:#7FC9C6;
+      --btn-fg:#1B1912;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 14px 40px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;min-height:100vh;
+    font-family:ui-rounded,"SF Pro Rounded","Segoe UI",system-ui,-apple-system,sans-serif;
+    font-size:18px;line-height:1.55;color:var(--ink);background:var(--bg);
+  }
+  .wrap{max-width:860px;margin:0 auto;padding:22px 18px 56px}
+
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .brand{font-weight:800;font-size:1.15rem;letter-spacing:-.01em}
+  .hgroup{display:flex;align-items:center;gap:10px}
+  .hlink{font-weight:700;color:var(--muted);text-underline-offset:3px}
+  .tag{font-size:.8rem;font-weight:700;background:var(--accent-soft);color:var(--accent);border-radius:999px;padding:3px 12px}
+
+  /* Bühne */
+  .stage{display:flex;align-items:flex-end;gap:16px;margin:18px 0}
+  .perry-wrap{flex:0 0 120px}
+  .perry{width:120px;height:auto;display:block;overflow:visible}
+  .perry-wrap.hop{animation:hop .5s ease-out 2}
+  .bubble{
+    position:relative;flex:1;background:var(--surface);border:1px solid var(--line);
+    border-radius:22px;padding:16px 20px;font-weight:600;margin-bottom:26px;box-shadow:var(--shadow);
+  }
+  .bubble::before{
+    content:"";position:absolute;left:-9px;bottom:24px;width:16px;height:16px;background:var(--surface);
+    border-left:1px solid var(--line);border-bottom:1px solid var(--line);transform:rotate(45deg);
+  }
+  .bubble.pop{animation:pop .3s ease-out}
+
+  .body-g{animation:bob 3.6s ease-in-out infinite}
+  .tail{transform-box:fill-box;transform-origin:85% 85%;animation:wag 1.1s ease-in-out infinite}
+  .eye{transform-box:fill-box;transform-origin:center;animation:blink 5s infinite}
+  .paw{transform-box:fill-box;transform-origin:center}
+  .wave .paw-r{animation:pawwave .6s ease-in-out 3}
+  .mouth{display:none}
+  [data-mood="wave"] .m-happy,[data-mood="happy"] .m-happy{display:inline}
+  [data-mood="cheer"] .m-cheer{display:inline}
+
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+  @keyframes wag{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(12deg)}}
+  @keyframes blink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
+  @keyframes pawwave{0%,100%{transform:rotate(0) translateY(0)}50%{transform:rotate(-26deg) translateY(-12px)}}
+  @keyframes hop{0%,100%{transform:translateY(0)}45%{transform:translateY(-18px)}}
+  @keyframes pop{from{transform:scale(.97);opacity:.5}to{transform:scale(1);opacity:1}}
+
+  /* Werkzeugleiste */
+  .toolbar{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 18px}
+
+  /* Karte */
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:28px 28px 24px;box-shadow:var(--shadow)}
+  .card.swap{animation:pop .25s ease-out}
+  h2{font-size:1.5rem;line-height:1.2;margin:0 0 12px;letter-spacing:-.01em}
+  h3{font-size:1.1rem;margin:20px 0 10px;letter-spacing:-.005em}
+  p{margin:0 0 12px;max-width:62ch}
+  a{color:var(--accent);font-weight:700;text-underline-offset:3px}
+  strong{font-weight:800}
+
+  /* Formular */
+  label{display:block;font-weight:800;margin:0 0 6px}
+  select,input[type="text"]{
+    width:100%;font:inherit;color:var(--ink);background:var(--surface-2);
+    border:2px solid var(--line);border-radius:14px;padding:10px 14px;
+  }
+  select:focus,input[type="text"]:focus{border-color:var(--accent);outline:none}
+  .field{margin-bottom:16px}
+  .setup-grid{display:grid;gap:16px;max-width:420px}
+
+  /* Buttons */
+  .btn{
+    font:inherit;font-weight:800;cursor:pointer;border:0;border-radius:999px;padding:12px 26px;
+    background:var(--surface-2);color:var(--ink);box-shadow:inset 0 0 0 2px var(--line);
+    transition:transform .12s ease, opacity .12s ease;
+  }
+  .btn:hover{transform:translateY(-1px)}
+  .btn:active{transform:translateY(1px)}
+  .btn.primary{background:var(--btn-bg);color:var(--btn-fg);box-shadow:none}
+  .actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:22px}
+  .actions .spacer{flex:1}
+  .textbtn{font:inherit;font-weight:700;background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;padding:6px}
+
+  /* Tageskarten (Bearbeiten) */
+  .day-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px 22px;margin-bottom:18px;box-shadow:var(--shadow)}
+  .day-card h3{margin-top:0}
+  .day-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 20px}
+
+  /* Urlaubsansicht (aufklappbar) */
+  .day-details{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px 18px;margin-bottom:14px}
+  .day-details summary{cursor:pointer}
+  .day-details summary h3{display:inline-block;margin:0}
+  .day-details dl{margin:14px 0 0;display:grid;grid-template-columns:auto 1fr;gap:8px 16px}
+  .day-details dt{font-weight:800;color:var(--muted)}
+  .day-details dd{margin:0}
+
+  /* Checklisten (Packliste / Einkaufsliste) */
+  ul.checklist{list-style:none;margin:0 0 8px;padding:0}
+  ul.checklist li{margin-bottom:10px}
+  label.check{display:flex;align-items:center;gap:10px;cursor:pointer;font-weight:600}
+  label.check input[type="checkbox"]{width:20px;height:20px;flex:none;accent-color:var(--accent)}
+
+  footer{margin-top:26px;text-align:center;font-size:.88rem;color:var(--muted)}
+  .flinks{margin-top:10px;display:flex;justify-content:center;gap:18px;flex-wrap:wrap}
+  .flinks a{color:var(--muted);font-weight:600}
+
+  :focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+
+  @media (max-width:560px){
+    body{font-size:17px}
+    .stage{flex-direction:column-reverse;align-items:center;gap:8px}
+    .perry-wrap{flex-basis:auto}
+    .perry{width:100px}
+    .bubble{margin-bottom:0;width:100%}
+    .bubble::before{left:50%;margin-left:-8px;bottom:-9px;border-left:0;border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+    .card{padding:22px 18px 18px}
+    .day-grid{grid-template-columns:1fr}
+    .day-details dl{grid-template-columns:1fr}
+    .day-details dt{margin-top:8px}
+  }
+  @media print{
+    body *{visibility:hidden}
+    #packlisteSection,#packlisteSection *{visibility:visible}
+    #packlisteSection{position:absolute;left:0;top:0;width:100%}
+    .no-print{display:none !important}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important;transition:none !important}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="hgroup"><div class="brand">Perry</div><span class="tag">Urlaubsplaner</span></div>
+    <a class="hlink" href="../">Alle Werkzeuge</a>
+  </header>
+
+  <section class="stage" aria-live="polite">
+    <div class="perry-wrap" id="perryWrap">
+      <svg class="perry" id="perry" data-mood="wave" viewBox="0 0 160 190" role="img" aria-label="Perry, ein kleiner freundlicher Hund">
+        <ellipse cx="80" cy="182" rx="42" ry="7" fill="#16213A" opacity=".15"/>
+        <g class="body-g">
+          <path class="tail" d="M38 160 C 10 165, 2 128, 18 98 C 26 84, 40 90, 36 106 C 28 124, 34 148, 50 158 Z" fill="#B9793E"/>
+          <ellipse cx="55" cy="178" rx="15" ry="10" fill="#A9682E"/>
+          <ellipse cx="105" cy="178" rx="15" ry="10" fill="#A9682E"/>
+          <ellipse cx="80" cy="133" rx="50" ry="46" fill="#E3A76F"/>
+          <ellipse cx="80" cy="150" rx="26" ry="23" fill="#FBF3E3" opacity=".85"/>
+          <ellipse class="paw paw-l" cx="58" cy="168" rx="14" ry="9" fill="#E3A76F"/>
+          <ellipse class="paw paw-r" cx="102" cy="168" rx="14" ry="9" fill="#E3A76F"/>
+          <path d="M46 112 L114 112 L94 138 L66 138 Z" fill="#236462"/>
+          <circle cx="80" cy="113" r="7" fill="#236462"/>
+          <circle cx="72" cy="124" r="3" fill="#FFFFFF" opacity=".6"/>
+          <circle cx="88" cy="124" r="3" fill="#FFFFFF" opacity=".6"/>
+          <path class="ear ear-l" d="M46 46 C 20 40, 14 78, 30 104 C 44 96, 50 64, 46 46 Z" fill="#B9793E"/>
+          <path class="ear ear-r" d="M114 46 C 140 40, 146 78, 130 104 C 116 96, 110 64, 114 46 Z" fill="#B9793E"/>
+          <circle cx="80" cy="80" r="44" fill="#E3A76F"/>
+          <ellipse cx="80" cy="98" rx="24" ry="17" fill="#F4E3C9"/>
+          <circle class="eye" cx="64" cy="74" r="7" fill="#2B2015"/>
+          <circle class="eye" cx="96" cy="74" r="7" fill="#2B2015"/>
+          <circle cx="61.5" cy="71.5" r="2" fill="#FFFFFF"/>
+          <circle cx="93.5" cy="71.5" r="2" fill="#FFFFFF"/>
+          <ellipse cx="80" cy="92" rx="7" ry="5" fill="#2B2015"/>
+          <path class="mouth m-happy" d="M66 106 Q80 120 94 106" fill="none" stroke="#2B2015" stroke-width="3.5" stroke-linecap="round"/>
+          <g class="mouth m-cheer">
+            <path d="M64 104 Q80 128 96 104 Q80 116 64 104 Z" fill="#2B2015"/>
+            <ellipse cx="80" cy="116" rx="7" ry="9" fill="#FF8A9A"/>
+          </g>
+        </g>
+      </svg>
+    </div>
+    <div class="bubble" id="bubble"></div>
+  </section>
+
+  <nav class="toolbar no-print" id="toolbar" aria-label="Ansicht wählen"></nav>
+
+  <main class="card" id="card"></main>
+
+  <footer>
+    Euer Urlaubsplan bleibt in diesem Browser gespeichert und ist beim nächsten Öffnen wieder da. Er verlässt dieses Gerät nie.
+    <div><button class="textbtn no-print" id="reset" type="button">Neuer Urlaub</button></div>
+    <div class="flinks no-print"><a href="https://geprog.com/imprint">Impressum</a> <a href="https://geprog.com/privacy">Datenschutz</a> <a href="https://geprog.com/">GEPROG GmbH</a></div>
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var KEY = "perry-v1";
+  var WEEKDAYS = ["Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag","Sonntag"];
+  var SEASON_LABELS = {fruehling:"Frühling", sommer:"Sommer", herbst:"Herbst", winter:"Winter"};
+  var FELDER = [
+    ["fruehstueck","Frühstück"],
+    ["vormittag","Vormittagsaktivität"],
+    ["mittag","Mittagessen"],
+    ["nachmittag","Nachmittagsaktivität"],
+    ["abend","Abendessen"],
+    ["abendaktivitaet","Abendaktivität"]
+  ];
+
+  var AKTIVITAETS_POSTEN = [
+    {stichworte:["schwimm","baden","pool","freibad","see","meer"], posten:["Badesachen","Badehandtuch","Sonnencreme","Badeschuhe"]},
+    {stichworte:["strand"], posten:["Badesachen","Handtuch","Sonnencreme","Eimer und Schaufel","Drachen"]},
+    {stichworte:["surf"], posten:["Badesachen","Surf-Shirt (Lycra)","Sonnencreme","Handtuch"]},
+    {stichworte:["schnorchel","tauch"], posten:["Taucherbrille oder Schnorchel","Badesachen","Badeschuhe"]},
+    {stichworte:["segel","boot","kanu","kajak"], posten:["Wechselkleidung","Wasserfeste Tasche"]},
+    {stichworte:["fahrrad","radtour","bike"], posten:["Fahrradhelm","Sonnenbrille","Trinkflasche"]},
+    {stichworte:["mountainbike","mtb"], posten:["Fahrradhelm","Feste Handschuhe","Trinkflasche"]},
+    {stichworte:["wander","bergtour","huette"], posten:["Wanderschuhe","Rucksack","Regenjacke","Trinkflasche","Sonnenhut"]},
+    {stichworte:["kletter"], posten:["Feste Schuhe","Lange Hose","Handschuhe"]},
+    {stichworte:["berg","gipfel"], posten:["Wanderschuhe","Warme Jacke","Sonnenbrille"]},
+    {stichworte:["ski","schnee","rodel","schlitten"], posten:["Skisachen oder Schneeanzug","Handschuhe","Mütze","Skibrille"]},
+    {stichworte:["reit","pferd","ponyhof"], posten:["Feste Schuhe","Lange Hose"]},
+    {stichworte:["forsch","entdeck","insekt"], posten:["Lupe","Kleines Becherglas","Matschhose"]},
+    {stichworte:["camp","zelt","lagerfeuer"], posten:["Taschenlampe","Schlafsack","Warme Jacke","Mückenspray"]},
+    {stichworte:["angel"], posten:["Sitzkissen","Sonnenhut","Wechselkleidung"]},
+    {stichworte:["zoo","tierpark"], posten:["Bequeme Schuhe","Fernglas","Sonnenhut"]},
+    {stichworte:["minigolf","skat","inliner"], posten:["Feste Schuhe"]},
+    {stichworte:["picknick"], posten:["Picknickdecke","Trinkflasche"]},
+    {stichworte:["museum","besichtig","stadtfuehr"], posten:["Bequeme Schuhe","Kleine Tasche"]},
+    {stichworte:["fussball","sport","ballspiel"], posten:["Sportschuhe","Sportkleidung","Trinkflasche"]},
+    {stichworte:["regen","drinnen"], posten:["Lieblingsbuch oder Kartenspiel","Wasserfeste Jacke"]}
+  ];
+
+  var JAHRESZEIT_POSTEN = {
+    fruehling:["Regenjacke","Gummistiefel","Pullover zum Übereinanderziehen"],
+    sommer:["Sonnencreme","Sonnenhut","Kurze Hosen","Badesachen"],
+    herbst:["Regenjacke","Gummistiefel","Warmer Pullover"],
+    winter:["Dicke Jacke","Mütze","Handschuhe","Schal"]
+  };
+
+  function basisPosten(tage){
+    return [
+      {text:"Unterhosen", menge:tage+1},
+      {text:"Socken", menge:tage+1},
+      {text:"T-Shirts", menge:tage},
+      {text:"Schlafanzug", menge:Math.max(1, Math.ceil(tage/3))},
+      {text:"Zahnbürste und Zahnpasta", menge:1},
+      {text:"Handtuch", menge:1}
+    ];
+  }
+
+  /* ---------- Fuzzy-Stichwortsuche (ohne externe Bibliothek) ---------- */
+  function levenshtein(a, b){
+    if(a === b) return 0;
+    var al = a.length, bl = b.length;
+    if(al === 0) return bl;
+    if(bl === 0) return al;
+    var prev = [];
+    for(var j = 0; j <= bl; j++) prev[j] = j;
+    for(var i = 1; i <= al; i++){
+      var curr = [i];
+      for(var jj = 1; jj <= bl; jj++){
+        var cost = a.charAt(i-1) === b.charAt(jj-1) ? 0 : 1;
+        curr[jj] = Math.min(prev[jj] + 1, curr[jj-1] + 1, prev[jj-1] + cost);
+      }
+      prev = curr;
+    }
+    return prev[bl];
+  }
+  var FUELLWOERTER = ["der","die","das","dem","den","ein","eine","einen","einem","und","oder","mit","ohne","zum","zur","zu","im","in","am","an","auf","bei","vom","von","für","ist","sind","wir","ich","wird","noch","mal","auch","gehen","fahren","machen","spielen","besuch","besuchen"];
+  function tokenize(text){
+    return text.toLowerCase().replace(/[^a-zäöüß]+/g, " ").split(" ").filter(function(w){
+      return w.length > 2 && FUELLWOERTER.indexOf(w) === -1;
+    });
+  }
+  function matchesKeyword(tokens, keyword){
+    var maxDist = keyword.length <= 5 ? 1 : 2;
+    for(var i = 0; i < tokens.length; i++){
+      var tok = tokens[i];
+      if(tok.indexOf(keyword) !== -1) return true;
+      if(levenshtein(tok, keyword) <= maxDist) return true;
+    }
+    return false;
+  }
+
+  function collectActivityText(state){
+    var parts = [];
+    state.tage_daten.forEach(function(d){ parts.push(d.vormittag||"", d.nachmittag||"", d.abendaktivitaet||""); });
+    return parts.join(" ");
+  }
+  function computeAktivitaetsPosten(state){
+    var tokens = tokenize(collectActivityText(state));
+    if(!tokens.length) return [];
+    var items = [];
+    AKTIVITAETS_POSTEN.forEach(function(regel){
+      var treffer = regel.stichworte.some(function(sw){ return matchesKeyword(tokens, sw); });
+      if(treffer){
+        regel.posten.forEach(function(p){ if(items.indexOf(p) === -1) items.push(p); });
+      }
+    });
+    return items;
+  }
+  function computePackliste(state){
+    return {
+      grund: basisPosten(state.tage),
+      jahreszeit: JAHRESZEIT_POSTEN[state.jahreszeit] || [],
+      aktivitaeten: computeAktivitaetsPosten(state)
+    };
+  }
+  function computeEinkaufsliste(state){
+    function sammeln(feld){
+      var seen = {}; var out = [];
+      state.tage_daten.forEach(function(d){
+        var val = (d[feld] || "").trim();
+        if(!val) return;
+        var key = val.toLowerCase();
+        if(seen[key]) return;
+        seen[key] = true; out.push(val);
+      });
+      return out;
+    }
+    return { fruehstueck: sammeln("fruehstueck"), mittag: sammeln("mittag"), abend: sammeln("abend") };
+  }
+
+  /* ---------- Zustand & Speicher ---------- */
+  function emptyDay(){ return {fruehstueck:"",vormittag:"",mittag:"",nachmittag:"",abend:"",abendaktivitaet:""}; }
+  function defaultState(){ return { eingerichtet:false, tage:7, startTag:0, jahreszeit:"sommer", ansicht:"bearbeiten", screen:"plan", tage_daten:[] }; }
+  var state = defaultState();
+
+  function load(){
+    try{
+      var raw = window.localStorage.getItem(KEY);
+      if(!raw) return;
+      var s = JSON.parse(raw);
+      if(s && typeof s === "object") state = s;
+    }catch(e){}
+  }
+  function save(){
+    try{ window.localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
+  }
+
+  /* ---------- Hilfsfunktionen ---------- */
+  function escapeHtml(str){
+    return String(str == null ? "" : str).replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];
+    });
+  }
+  function hop(){
+    var w = document.getElementById("perryWrap");
+    w.classList.remove("hop"); void w.offsetWidth; w.classList.add("hop");
+  }
+
+  /* ---------- Rendern ---------- */
+  var elBubble = document.getElementById("bubble");
+  var elPerry = document.getElementById("perry");
+  var elToolbar = document.getElementById("toolbar");
+  var elCard = document.getElementById("card");
+
+  function bubbleText(){
+    if(!state.eingerichtet) return "Wuff! Ich bin Perry. Lass uns euren Urlaub planen!";
+    if(state.screen === "packliste") return "Hier ist eure Packliste – nichts vergessen!";
+    if(state.screen === "einkaufsliste") return "Das müsst ihr noch einkaufen.";
+    if(state.ansicht === "urlaub") return "Viel Spaß im Urlaub! Klickt auf einen Tag, um ihn aufzuklappen.";
+    return "Tragt ein, was ihr vorhabt. Bei den Aktivitäten reicht auch Diktieren über die Tastatur.";
+  }
+  function moodFor(){
+    if(!state.eingerichtet) return "wave";
+    if(state.ansicht === "urlaub" && state.screen === "plan") return "cheer";
+    return "happy";
+  }
+  function setMood(mood){
+    elPerry.setAttribute("data-mood", mood);
+    elPerry.classList.toggle("wave", mood === "wave");
+  }
+
+  function weekdayFor(i){ return WEEKDAYS[(state.startTag + i) % 7]; }
+
+  function renderToolbar(){
+    if(!state.eingerichtet){ elToolbar.innerHTML = ""; return; }
+    var html = "";
+    if(state.screen === "plan"){
+      html += '<button type="button" class="btn" data-action="toggle-ansicht">' +
+        (state.ansicht === "bearbeiten" ? "Zur Urlaubsansicht" : "Zum Bearbeiten") + '</button>';
+    }else{
+      html += '<button type="button" class="btn" data-action="go-plan">Zurück zum Plan</button>';
+    }
+    html += '<button type="button" class="btn' + (state.screen === "packliste" ? " primary" : "") + '" data-action="go-packliste">Packliste</button>';
+    html += '<button type="button" class="btn' + (state.screen === "einkaufsliste" ? " primary" : "") + '" data-action="go-einkaufsliste">Einkaufsliste</button>';
+    elToolbar.innerHTML = html;
+  }
+
+  function renderSetup(){
+    var tageOptions = "";
+    for(var n = 1; n <= 21; n++){
+      tageOptions += '<option value="' + n + '"' + (n === state.tage ? " selected" : "") + '>' + n + (n === 1 ? " Tag" : " Tage") + '</option>';
+    }
+    var startOptions = WEEKDAYS.map(function(w, i){
+      return '<option value="' + i + '"' + (i === state.startTag ? " selected" : "") + '>' + w + '</option>';
+    }).join("");
+    var seasonOptions = Object.keys(SEASON_LABELS).map(function(k){
+      return '<option value="' + k + '"' + (k === state.jahreszeit ? " selected" : "") + '>' + SEASON_LABELS[k] + '</option>';
+    }).join("");
+
+    elCard.innerHTML =
+      "<h2>Euren Urlaub einrichten</h2>" +
+      "<p>Beantwortet drei kurze Fragen, dann legt Perry euren Plan an.</p>" +
+      '<form id="setupForm">' +
+        '<div class="setup-grid">' +
+          '<div class="field"><label for="f-tage">Wie viele Tage seid ihr im Urlaub?</label><select id="f-tage">' + tageOptions + '</select></div>' +
+          '<div class="field"><label for="f-start">An welchem Wochentag fangt ihr an?</label><select id="f-start">' + startOptions + '</select></div>' +
+          '<div class="field"><label for="f-jahreszeit">In welcher Jahreszeit reist ihr?</label><select id="f-jahreszeit">' + seasonOptions + '</select></div>' +
+        '</div>' +
+        '<div class="actions"><span class="spacer"></span><button type="submit" class="btn primary">Plan erstellen</button></div>' +
+      '</form>';
+  }
+
+  function dayCardEdit(tag, i){
+    var felderHtml = FELDER.map(function(f){
+      var feld = f[0], label = f[1];
+      var id = "f-" + i + "-" + feld;
+      return '<div class="field"><label for="' + id + '">' + label + '</label>' +
+        '<input type="text" id="' + id + '" data-day="' + i + '" data-feld="' + feld + '" value="' + escapeHtml(tag[feld]) + '"></div>';
+    }).join("");
+    return '<section class="day-card"><h3>Tag ' + (i+1) + ' – ' + weekdayFor(i) + '</h3><div class="day-grid">' + felderHtml + '</div></section>';
+  }
+  function dayCardView(tag, i){
+    var rows = FELDER.map(function(f){
+      var feld = f[0], label = f[1];
+      return "<dt>" + label + "</dt><dd>" + (tag[feld] ? escapeHtml(tag[feld]) : "–") + "</dd>";
+    }).join("");
+    return '<details class="day-details"><summary><h3>Tag ' + (i+1) + ' – ' + weekdayFor(i) + '</h3></summary><dl>' + rows + '</dl></details>';
+  }
+
+  function renderPlan(){
+    var html = "<h2>Euer Urlaubsplan</h2>";
+    if(state.ansicht === "bearbeiten"){
+      html += state.tage_daten.map(dayCardEdit).join("");
+    }else{
+      html += state.tage_daten.map(dayCardView).join("");
+    }
+    elCard.innerHTML = html;
+  }
+
+  function liItems(arr, withMenge){
+    if(!arr.length) return "";
+    return arr.map(function(item){
+      var text = withMenge ? (item.text + " (" + item.menge + "×)") : item;
+      return '<li><label class="check"><input type="checkbox"> ' + escapeHtml(text) + '</label></li>';
+    }).join("");
+  }
+
+  function renderPackliste(){
+    var p = computePackliste(state);
+    elCard.innerHTML =
+      '<section id="packlisteSection">' +
+      "<h2>Packliste</h2>" +
+      "<p>Für " + state.tage + (state.tage === 1 ? " Tag" : " Tage") + " im " + SEASON_LABELS[state.jahreszeit] + ".</p>" +
+      "<h3>Grundausstattung</h3><ul class=\"checklist\">" + liItems(p.grund, true) + "</ul>" +
+      "<h3>Für die Jahreszeit</h3><ul class=\"checklist\">" + (p.jahreszeit.length ? liItems(p.jahreszeit, false) : "<li>Keine besonderen Posten.</li>") + "</ul>" +
+      "<h3>Für eure Aktivitäten</h3><ul class=\"checklist\">" + (p.aktivitaeten.length ? liItems(p.aktivitaeten, false) : "<li>Noch keine passenden Aktivitäten eingetragen – trag welche ein, dann ergänzt Perry hier passende Sachen.</li>") + "</ul>" +
+      '<div class="actions no-print"><span class="spacer"></span><button type="button" class="btn primary" data-action="print">Drucken oder als PDF speichern</button></div>' +
+      '</section>';
+  }
+
+  function renderEinkaufsliste(){
+    var e = computeEinkaufsliste(state);
+    function block(title, arr){
+      return "<h3>" + title + "</h3><ul class=\"checklist\">" + (arr.length ? liItems(arr, false) : "<li>Noch nichts eingetragen.</li>") + "</ul>";
+    }
+    elCard.innerHTML =
+      "<h2>Einkaufsliste</h2>" +
+      "<p>Alle Mahlzeiten aus eurem Plan, ohne Dopplungen, zum Abhaken beim Einkaufen.</p>" +
+      block("Frühstück", e.fruehstueck) + block("Mittagessen", e.mittag) + block("Abendessen", e.abend);
+  }
+
+  function render(){
+    renderToolbar();
+    if(!state.eingerichtet){ renderSetup(); }
+    else if(state.screen === "packliste"){ renderPackliste(); }
+    else if(state.screen === "einkaufsliste"){ renderEinkaufsliste(); }
+    else{ renderPlan(); }
+    elBubble.textContent = bubbleText();
+    setMood(moodFor());
+    save();
+  }
+
+  /* ---------- Ereignisse ---------- */
+  document.addEventListener("submit", function(ev){
+    if(ev.target.id !== "setupForm") return;
+    ev.preventDefault();
+    var tage = parseInt(document.getElementById("f-tage").value, 10);
+    var startTag = parseInt(document.getElementById("f-start").value, 10);
+    var jahreszeit = document.getElementById("f-jahreszeit").value;
+    var tageDaten = [];
+    for(var i = 0; i < tage; i++) tageDaten.push(emptyDay());
+    state.tage = tage; state.startTag = startTag; state.jahreszeit = jahreszeit;
+    state.tage_daten = tageDaten; state.eingerichtet = true; state.ansicht = "bearbeiten"; state.screen = "plan";
+    render(); hop();
+    window.scrollTo({top:0, behavior:"smooth"});
+  });
+
+  document.addEventListener("input", function(ev){
+    var t = ev.target;
+    if(t.hasAttribute && t.hasAttribute("data-day")){
+      var day = parseInt(t.getAttribute("data-day"), 10);
+      var feld = t.getAttribute("data-feld");
+      state.tage_daten[day][feld] = t.value;
+      save();
+    }
+  });
+
+  document.addEventListener("click", function(ev){
+    var t = ev.target.closest("[data-action]");
+    if(t){
+      var a = t.getAttribute("data-action");
+      if(a === "toggle-ansicht"){ state.ansicht = state.ansicht === "bearbeiten" ? "urlaub" : "bearbeiten"; render(); }
+      else if(a === "go-plan"){ state.screen = "plan"; render(); }
+      else if(a === "go-packliste"){ state.screen = "packliste"; render(); }
+      else if(a === "go-einkaufsliste"){ state.screen = "einkaufsliste"; render(); }
+      else if(a === "print"){ window.print(); }
+      return;
+    }
+    if(ev.target.id === "reset"){
+      if(window.confirm("Wirklich alles löschen und einen neuen Urlaub planen? Das kann nicht rückgängig gemacht werden.")){
+        state = defaultState();
+        try{ window.localStorage.removeItem(KEY); }catch(e){}
+        render(); hop();
+      }
+    }
+  });
+
+  load();
+  render();
+})();
+</script>
+</body>
+</html>
