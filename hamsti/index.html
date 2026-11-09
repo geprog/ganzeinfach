@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Hamsti: Aufgaben hamstern und eine nach der anderen abarbeiten</title>
+<meta name="description" content="Hamsti nimmt dir deine Aufgaben ab, damit du sie aus dem Kopf bekommst: als privat oder geschäftlich ablegen, beim Abarbeiten immer nur eine zufällige Aufgabe zeigen lassen. Ohne Anmeldung, ohne Tracking, alles bleibt auf diesem Gerät.">
+<link rel="canonical" href="https://ganzeinfach.geprog.com/hamsti/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="GEPROG">
+<meta property="og:title" content="Hamsti: Aufgaben hamstern und eine nach der anderen abarbeiten">
+<meta property="og:description" content="Leg Aufgaben als privat oder geschäftlich ab und lass dir beim Abarbeiten per Zufall immer nur eine davon zeigen – der Rest bleibt gut verstaut.">
+<meta property="og:url" content="https://ganzeinfach.geprog.com/hamsti/">
+<meta property="og:locale" content="de_DE">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hamsti: Aufgaben hamstern und eine nach der anderen abarbeiten">
+<meta name="twitter:description" content="Leg Aufgaben als privat oder geschäftlich ab und lass dir beim Abarbeiten per Zufall immer nur eine davon zeigen – der Rest bleibt gut verstaut.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Hamsti",
+  "url": "https://ganzeinfach.geprog.com/hamsti/",
+  "description": "Aufgaben als privat oder geschäftlich sammeln und aus dem Kopf bekommen: beim Abarbeiten per Zufall immer nur eine passende Aufgabe anzeigen lassen.",
+  "applicationCategory": "ProductivityApplication",
+  "operatingSystem": "Jeder Webbrowser",
+  "inLanguage": "de",
+  "isAccessibleForFree": true,
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"},
+  "publisher": {"@type": "Organization", "name": "GEPROG GmbH", "url": "https://geprog.com/"}
+}
+</script>
+<style>
+  :root{
+    --bg:#F6FBF8;
+    --surface:#FFFFFF;
+    --surface-2:#EAF4EE;
+    --ink:#15241D;
+    --muted:#54685F;
+    --line:#D7E6DD;
+    --accent:#0A6E4C;
+    --accent-soft:#D9F2E6;
+    --btn-bg:#0A6E4C;
+    --btn-fg:#FFFFFF;
+    --shadow:0 1px 2px rgba(21,36,29,.05), 0 6px 16px rgba(21,36,29,.08);
+    --btn-shadow:0 2px 8px rgba(10,110,76,.28);
+    --radius:16px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0F1713;
+      --surface:#17221C;
+      --surface-2:#1C2821;
+      --ink:#EAF3EE;
+      --muted:#A9BDB2;
+      --line:#2B3A32;
+      --accent:#34D399;
+      --accent-soft:#1E3A2C;
+      --btn-bg:#34D399;
+      --btn-fg:#0F1713;
+      --shadow:0 1px 2px rgba(0,0,0,.35), 0 6px 20px rgba(0,0,0,.35);
+      --btn-shadow:0 2px 10px rgba(0,0,0,.4);
+    }
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;min-height:100vh;
+    font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+    font-size:18px;line-height:1.55;color:var(--ink);background:var(--bg);
+  }
+  .wrap{max-width:720px;margin:0 auto;padding:22px 18px 56px}
+
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+  .brand h1{font-weight:800;font-size:1.15rem;letter-spacing:-.01em;margin:0}
+  .hlink{font-weight:700;color:var(--muted);text-underline-offset:3px}
+
+  .stage{display:flex;align-items:center;gap:16px;margin:4px 0 18px}
+  .mascot{width:104px;height:auto;flex:none}
+  .stage p{margin:0;font-weight:600;max-width:46ch}
+
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:28px 28px 24px;box-shadow:var(--shadow);margin-bottom:18px}
+  .card.swap{animation:pop .25s ease-out}
+  @keyframes pop{from{transform:scale(.98);opacity:.6}to{transform:scale(1);opacity:1}}
+  h2{font-size:1.4rem;line-height:1.2;margin:0 0 10px;letter-spacing:-.01em}
+  h3{font-size:1.05rem;margin:18px 0 8px}
+  p{margin:0 0 12px;max-width:62ch}
+
+  label{display:block;font-weight:700;margin:0 0 6px}
+  textarea{
+    width:100%;font:inherit;color:inherit;background:var(--surface-2);border:2px solid var(--line);
+    border-radius:10px;padding:12px 14px;resize:vertical;min-height:4.5em;
+  }
+  textarea:focus-visible{border-color:var(--accent)}
+
+  .choices{display:grid;gap:10px;margin:14px 0 6px}
+  .choices.cols2{grid-template-columns:1fr 1fr}
+  .choices.cols3{grid-template-columns:1fr 1fr 1fr}
+  @media (max-width:520px){ .choices.cols3{grid-template-columns:1fr} }
+  .choice{
+    text-align:left;font:inherit;color:inherit;cursor:pointer;
+    background:var(--surface-2);border:2px solid var(--line);border-radius:10px;padding:14px 16px;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .choice strong{display:flex;align-items:center;gap:6px}
+  .choice span{display:block;font-size:.9rem;color:var(--muted);margin-top:2px}
+  .choice:hover{border-color:var(--accent)}
+  .choice[aria-checked="true"]{border-color:var(--accent);background:var(--accent-soft)}
+  .choice .check{display:none;flex:none;width:16px;height:16px;color:var(--accent)}
+  .choice[aria-checked="true"] .check{display:inline-flex}
+
+  .btn{
+    font:inherit;font-weight:800;cursor:pointer;border:0;border-radius:10px;padding:12px 24px;
+    background:var(--surface-2);color:var(--ink);box-shadow:inset 0 0 0 2px var(--line);
+    transition:transform .12s ease, opacity .12s ease;
+  }
+  .btn:hover{transform:translateY(-1px)}
+  .btn:active{transform:translateY(1px)}
+  .btn.primary{background:var(--btn-bg);color:var(--btn-fg);box-shadow:var(--btn-shadow)}
+  .btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+  .actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:20px}
+  .actions .spacer{flex:1}
+  .textbtn{font:inherit;font-weight:700;background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;padding:6px}
+
+  .home-actions{display:grid;gap:12px;margin-top:18px}
+  .home-actions .btn{width:100%;padding:18px 20px;font-size:1.05rem}
+
+  .tasklist{list-style:none;margin:0 0 6px;padding:0;display:grid;gap:10px}
+  .taskrow{display:flex;align-items:flex-start;gap:12px;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+  .taskrow .ttext{flex:1;margin:0;max-width:none}
+  .badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+  .badge{font-size:.78rem;font-weight:700;background:var(--accent-soft);color:var(--accent);border-radius:6px;padding:2px 10px}
+  .empty{color:var(--muted)}
+
+  footer{margin-top:26px;text-align:center;font-size:.88rem;color:var(--muted)}
+  .flinks{margin-top:10px;display:flex;justify-content:center;gap:18px;flex-wrap:wrap}
+  .flinks a{color:var(--muted);font-weight:600}
+
+  :focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+
+  @media (max-width:560px){
+    body{font-size:17px}
+    .card{padding:22px 18px 18px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important;transition:none !important}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand"><h1>Hamsti</h1></div>
+    <a class="hlink" href="../">← Alle Werkzeuge</a>
+  </header>
+
+  <section class="stage">
+    <svg class="mascot" viewBox="0 0 240 280" role="img" aria-labelledby="mascotTitle mascotDesc">
+      <title id="mascotTitle">Hamsti</title><desc id="mascotDesc">Ein niedlicher Goldhamster, das Maskottchen dieser App.</desc>
+      <defs><style>.o{stroke:#754629;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}.fur{fill:#e9a45f}.cream{fill:#fff0d9}.pink{fill:#f6b6b2}</style></defs>
+      <g id="ears">
+       <g id="ear-left" transform-origin="76px 69px"><path class="fur o" d="M53 91C43 77 44 52 56 43C69 33 87 48 91 69L83 96Z"/><path class="pink" d="M56 75C53 60 58 48 65 49C73 49 79 63 79 78L69 87Z"/></g>
+       <g id="ear-right" transform-origin="164px 69px"><path class="fur o" d="M149 69C153 48 171 33 184 43C196 52 197 77 187 91L157 96Z"/><path class="pink" d="M161 78C161 63 167 49 175 49C182 48 187 60 184 75L171 87Z"/></g>
+      </g>
+      <g id="tail" transform-origin="169px 206px"><path class="fur o" d="M165 211C177 198 190 199 193 212C197 227 184 240 168 235C160 232 157 220 165 211Z"/><path fill="#f5c58e" d="M171 216C180 208 188 213 186 222C183 231 173 232 168 226Z"/></g>
+      <g id="body"><path id="torso" class="fur o" d="M69 140C73 119 91 108 120 108C149 108 167 119 171 140L179 220C181 245 158 258 120 258C82 258 59 245 61 220Z"/><path id="belly" class="cream" d="M88 151C96 137 107 133 120 133C134 133 145 138 152 151L157 224C157 240 143 247 120 247C97 247 83 240 83 224Z"/></g>
+      <g id="legs">
+       <g id="leg-left" transform-origin="83px 222px"><path class="fur o" d="M69 211C61 222 63 240 77 245L94 244L99 229L89 211Z"/><ellipse id="foot-left" cx="81" cy="243" rx="17" ry="9" fill="#f5c18f" stroke="#754629" stroke-width="3"/></g>
+       <g id="leg-right" transform-origin="157px 222px"><path class="fur o" d="M151 211L141 229L146 244L163 245C177 240 179 222 171 211Z"/><ellipse id="foot-right" cx="159" cy="243" rx="17" ry="9" fill="#f5c18f" stroke="#754629" stroke-width="3"/></g>
+      </g>
+      <g id="arms">
+       <g id="arm-left" transform-origin="78px 166px"><path class="fur o" d="M82 151C67 153 62 169 68 185C73 197 88 198 96 188L100 171Z"/><ellipse cx="76" cy="188" rx="9" ry="8" fill="#f7d5b4" stroke="#754629" stroke-width="2.5"/></g>
+       <g id="arm-right" transform-origin="162px 166px"><path class="fur o" d="M158 151C173 153 178 169 172 185C167 197 152 198 144 188L140 171Z"/><ellipse cx="164" cy="188" rx="9" ry="8" fill="#f7d5b4" stroke="#754629" stroke-width="2.5"/></g>
+      </g>
+      <g id="head" transform-origin="120px 111px">
+       <path id="head-shape" class="fur o" d="M61 111C61 76 83 54 120 54C157 54 179 76 179 111C179 145 157 164 120 164C83 164 61 145 61 111Z"/>
+       <g id="cheek-patches"><path id="cheek-patch-left" class="cream" d="M62 115C70 99 91 96 108 107C118 114 117 132 106 142C91 157 68 150 62 132Z"/><path id="cheek-patch-right" class="cream" d="M178 115C170 99 149 96 132 107C122 114 123 132 134 142C149 157 172 150 178 132Z"/><path id="chin-patch" class="cream" d="M91 139C101 132 139 132 149 139C146 157 136 164 120 164C104 164 94 157 91 139Z"/></g>
+       <g id="eyes"><g id="eye-left"><ellipse cx="96" cy="105" rx="5.2" ry="6.3" fill="#38291f"/><circle cx="97.5" cy="103" r="1.6" fill="#fff"/></g><g id="eye-right"><ellipse cx="144" cy="105" rx="5.2" ry="6.3" fill="#38291f"/><circle cx="145.5" cy="103" r="1.6" fill="#fff"/></g></g>
+       <g id="cheeks"><ellipse id="blush-left" cx="78" cy="126" rx="10" ry="6.5" class="pink" opacity=".9"/><ellipse id="blush-right" cx="162" cy="126" rx="10" ry="6.5" class="pink" opacity=".9"/></g>
+       <g id="nose-mouth"><ellipse id="nose" cx="120" cy="119" rx="5.2" ry="3.7" fill="#d96f70"/><path id="mouth" d="M120 123Q116 131 109 126M120 123Q124 131 131 126" fill="none" stroke="#51372c" stroke-width="2.3" stroke-linecap="round"/></g>
+      </g>
+    </svg>
+    <p>Pack deine Aufgaben in Hamstis Backentaschen – raus aus deinem Kopf, bis du bereit für eine bist.</p>
+  </section>
+
+  <main id="app"></main>
+
+  <footer>
+    Deine Aufgaben bleiben in diesem Browser gespeichert (lokal, über <code>localStorage</code>) und sind bei deinem nächsten Besuch wieder da. Sie verlassen dieses Gerät nie.
+    <div class="flinks"><a href="https://geprog.com/imprint">Impressum</a> <a href="https://geprog.com/privacy">Datenschutz</a> <a href="https://geprog.com/">GEPROG GmbH</a></div>
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var KEY = "hamsti-v1";
+
+  function load(){
+    try{
+      var raw = window.localStorage.getItem(KEY);
+      if(!raw) return null;
+      return JSON.parse(raw);
+    }catch(e){ return null; }
+  }
+  function save(){
+    try{ window.localStorage.setItem(KEY, JSON.stringify(data)); }catch(e){}
+  }
+
+  var data = load() || {
+    tasks: [],
+    mode: "list",
+    listView: "home",
+    work: { step: "ask", category: null, taskId: null }
+  };
+
+  var CATEGORIES = [
+    {v:"privat", t:"Privat", s:"Für dich, deine Familie, dein Zuhause."},
+    {v:"geschaeftlich", t:"Geschäftlich", s:"Für Arbeit, Kunden, dein Geschäft."}
+  ];
+  var CATEGORIES_PICK = CATEGORIES.concat([
+    {v:"gemischt", t:"Gemischt", s:"Privat und geschäftlich gemischt."}
+  ]);
+
+  function categoryLabel(v){
+    var all = CATEGORIES_PICK;
+    var c = all.filter(function(x){ return x.v === v; })[0];
+    return c ? c.t : v;
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"})[c];
+    });
+  }
+
+  function openTasks(){ return data.tasks; }
+
+  /* ---------- Fuzzy-Ähnlichkeit (Tippfehler- und Wort-tolerant, für Duplikat-Hinweis) ---------- */
+  function normalizeText(s){
+    return String(s).toLowerCase().replace(/[^a-z0-9äöüß]+/g, " ").replace(/\s+/g, " ").trim();
+  }
+  function levenshtein(a, b){
+    var m = a.length, n = b.length;
+    if(!m) return n;
+    if(!n) return m;
+    var prev = [];
+    for(var j = 0; j <= n; j++) prev[j] = j;
+    for(var i = 1; i <= m; i++){
+      var cur = [i];
+      for(j = 1; j <= n; j++){
+        var cost = a.charAt(i - 1) === b.charAt(j - 1) ? 0 : 1;
+        cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + cost);
+      }
+      prev = cur;
+    }
+    return prev[n];
+  }
+  function similarity(a, b){
+    var na = normalizeText(a), nb = normalizeText(b);
+    if(!na || !nb) return 0;
+    var charRatio = 1 - levenshtein(na, nb) / Math.max(na.length, nb.length);
+    var wa = na.split(" "), wb = nb.split(" ");
+    var setA = {}, setB = {}, key;
+    wa.forEach(function(w){ setA[w] = true; });
+    wb.forEach(function(w){ setB[w] = true; });
+    var inter = 0;
+    for(key in setA){ if(setB[key]) inter++; }
+    var union = Object.keys(setA).length + Object.keys(setB).length - inter;
+    var wordRatio = union ? inter / union : 0;
+    return Math.max(charRatio, wordRatio);
+  }
+  var SIMILARITY_THRESHOLD = 0.45;
+
+  var appEl;
+  function render(html){
+    appEl.classList.remove("swap");
+    appEl.innerHTML = html;
+    void appEl.offsetWidth;
+    appEl.classList.add("swap");
+  }
+
+  /* ---------- Auswahl-Radiogroup (Tastatur: Pfeiltasten, Roving-Tabindex) ---------- */
+  var checkSvg = '<svg class="check" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12l5 5L20 6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  function choiceHtml(name, options, selectedValue, groupLabel, cols){
+    var html = "<div class=\"choices cols" + cols + "\" role=\"radiogroup\" aria-label=\"" + groupLabel + "\" data-name=\"" + name + "\">";
+    options.forEach(function(o, i){
+      var selected = o.v === selectedValue;
+      var roving = selectedValue ? selected : i === 0;
+      html += "<button type=\"button\" role=\"radio\" class=\"choice\" data-name=\"" + name + "\" data-value=\"" + o.v + "\" aria-checked=\"" + selected + "\" tabindex=\"" + (roving ? "0" : "-1") + "\"><strong>" + checkSvg + o.t + "</strong><span>" + o.s + "</span></button>";
+    });
+    html += "</div>";
+    return html;
+  }
+
+  function toggleRadio(choice){
+    var group = choice.closest('[role="radiogroup"]');
+    var items = group.querySelectorAll('[role="radio"]');
+    items.forEach(function(it){ it.setAttribute("aria-checked", "false"); it.setAttribute("tabindex", "-1"); });
+    choice.setAttribute("aria-checked", "true");
+    choice.setAttribute("tabindex", "0");
+  }
+
+  document.addEventListener("keydown", function(ev){
+    var dir = ev.key === "ArrowDown" || ev.key === "ArrowRight" ? 1
+            : ev.key === "ArrowUp" || ev.key === "ArrowLeft" ? -1 : 0;
+    if(!dir) return;
+    var t = ev.target.closest && ev.target.closest('[role="radio"]');
+    var group = t && t.closest('[role="radiogroup"]');
+    if(!group) return;
+    ev.preventDefault();
+    var items = Array.prototype.slice.call(group.querySelectorAll('[role="radio"]'));
+    var idx = items.indexOf(t);
+    var next = items[(idx + dir + items.length) % items.length];
+    next.click();
+    next.focus();
+  });
+
+  /* ---------- Listenansicht ---------- */
+  function taskListUl(tasks){
+    var html = "<ul class=\"tasklist\">";
+    tasks.forEach(function(t){
+      html += "<li class=\"taskrow\"><p class=\"ttext\">" + escapeHtml(t.text) +
+        "<span class=\"badges\"><span class=\"badge\">" + categoryLabel(t.category) + "</span></span></p>" +
+        "<button type=\"button\" class=\"textbtn\" data-action=\"delete\" data-id=\"" + t.id + "\">Löschen</button></li>";
+    });
+    html += "</ul>";
+    return html;
+  }
+
+  function taskListView(query){
+    var all = data.tasks;
+    var trimmed = query.trim();
+    if(trimmed.length < 3){
+      if(all.length === 0) return {heading: "Deine Aufgaben", html: "<p class=\"empty\">Noch keine offenen Aufgaben. Leg oben eine neue an.</p>"};
+      return {heading: "Deine Aufgaben", html: taskListUl(all)};
+    }
+    var matches = all
+      .map(function(t){ return {t: t, score: similarity(trimmed, t.text)}; })
+      .filter(function(x){ return x.score >= SIMILARITY_THRESHOLD; })
+      .sort(function(a, b){ return b.score - a.score; })
+      .map(function(x){ return x.t; });
+    if(matches.length === 0){
+      return {heading: "Ähnliche Aufgaben", html: "<p class=\"empty\">Keine ähnliche Aufgabe gefunden – sieht nach etwas Neuem aus.</p>"};
+    }
+    return {heading: "Ähnliche Aufgaben gefunden", html: taskListUl(matches)};
+  }
+
+  function refreshTaskListView(){
+    var textarea = document.getElementById("taskText");
+    var view = taskListView(textarea ? textarea.value : "");
+    var headingEl = document.getElementById("tasksHeading");
+    var wrapEl = document.getElementById("taskListWrap");
+    if(headingEl) headingEl.textContent = view.heading;
+    if(wrapEl) wrapEl.innerHTML = view.html;
+  }
+
+  function renderList(){
+    if(data.listView === "add") return renderAddScreen();
+    return renderHomeScreen();
+  }
+
+  function renderHomeScreen(){
+    var count = data.tasks.length;
+    var html = "<section class=\"card\"><h2>Was möchtest du tun?</h2>";
+    html += "<p>" + (count === 0 ? "Noch keine offenen Aufgaben." : "Du hast " + count + " offene Aufgabe" + (count === 1 ? "" : "n") + ".") + "</p>";
+    html += "<div class=\"home-actions\">";
+    html += "<button type=\"button\" class=\"btn primary\" data-action=\"goAdd\">Aufgabe hinzufügen</button>";
+    html += "<button type=\"button\" class=\"btn primary\" data-action=\"startWork\"" + (count === 0 ? " disabled" : "") + ">Abarbeiten starten</button>";
+    html += "</div></section>";
+    render(html);
+  }
+
+  function renderAddScreen(){
+    var view = taskListView("");
+    var html = "<section class=\"card\">";
+    html += "<button type=\"button\" class=\"textbtn\" data-action=\"goHome\">← Zurück</button>";
+    html += "<h2>Neue Aufgabe</h2>";
+    html += "<form id=\"addForm\">";
+    html += "<label for=\"taskText\">Was ist zu tun?</label>";
+    html += "<textarea id=\"taskText\" name=\"text\" required placeholder=\"z. B. Steuerunterlagen sortieren\"></textarea>";
+    html += "<h3>Kategorie</h3>" + choiceHtml("category", CATEGORIES, null, "Kategorie der Aufgabe", 2);
+    html += "<div class=\"actions\"><span class=\"spacer\"></span><button type=\"submit\" class=\"btn primary\">Aufgabe hinzufügen</button></div>";
+    html += "</form></section>";
+
+    html += "<section class=\"card\"><h2 id=\"tasksHeading\">" + view.heading + "</h2>";
+    html += "<div id=\"taskListWrap\" aria-live=\"polite\">" + view.html + "</div></section>";
+
+    render(html);
+
+    var taskText = document.getElementById("taskText");
+    taskText.addEventListener("input", refreshTaskListView);
+
+    document.getElementById("addForm").addEventListener("submit", function(ev){
+      ev.preventDefault();
+      var text = taskText.value.trim();
+      var catBtn = document.querySelector('[data-name="category"][aria-checked="true"]');
+      if(!text || !catBtn) return;
+      data.tasks.push({
+        id: "t" + Date.now() + Math.random().toString(36).slice(2,8),
+        text: text,
+        category: catBtn.getAttribute("data-value")
+      });
+      save();
+      renderAddScreen();
+    });
+  }
+
+  /* ---------- Abarbeiten-Modus ---------- */
+  function matchingTasks(category){
+    var open = openTasks();
+    if(category === "gemischt") return open;
+    return open.filter(function(t){ return t.category === category; });
+  }
+
+  function renderWork(){
+    var w = data.work;
+    var html = "<section class=\"card\">";
+
+    if(w.step === "ask"){
+      html += "<h2>Nächste Aufgabe?</h2><p>Möchtest du deine nächste Aufgabe sehen?</p>";
+      html += "<div class=\"actions\"><button type=\"button\" class=\"btn primary\" data-action=\"toCategory\">Ja, zeig mir eine Aufgabe</button><span class=\"spacer\"></span><button type=\"button\" class=\"textbtn\" data-action=\"toList\">Zurück zur Liste</button></div>";
+    } else if(w.step === "category"){
+      html += "<h2>Privat, geschäftlich oder gemischt?</h2><p>Woran möchtest du gerade arbeiten?</p>";
+      html += choiceHtml("category", CATEGORIES_PICK, w.category, "Kategorie", 3);
+      html += "<div class=\"actions\"><button type=\"button\" class=\"textbtn\" data-action=\"backToAsk\">Zurück</button><span class=\"spacer\"></span><button type=\"button\" class=\"btn primary\" data-action=\"pick\"" + (w.category ? "" : " disabled") + ">Aufgabe zeigen</button></div>";
+    } else if(w.step === "empty"){
+      html += "<h2>Keine passende Aufgabe</h2><p>Für <strong>" + categoryLabel(w.category) + "</strong> gibt es gerade keine offene Aufgabe.</p>";
+      html += "<div class=\"actions\"><button type=\"button\" class=\"btn primary\" data-action=\"backToCategory\">Andere Auswahl</button><span class=\"spacer\"></span><button type=\"button\" class=\"textbtn\" data-action=\"toList\">Zurück zur Liste</button></div>";
+    } else {
+      var task = data.tasks.filter(function(t){ return t.id === w.taskId; })[0];
+      if(!task){
+        data.work.step = "ask";
+        save();
+        return renderWork();
+      }
+      html += "<h2>Deine Aufgabe</h2>";
+      html += "<p>" + escapeHtml(task.text) + "</p>";
+      html += "<span class=\"badges\"><span class=\"badge\">" + categoryLabel(task.category) + "</span></span>";
+      html += "<div class=\"actions\"><button type=\"button\" class=\"btn primary\" data-action=\"done\">Erledigt</button><button type=\"button\" class=\"btn\" data-action=\"skip\">Überspringen</button><span class=\"spacer\"></span><button type=\"button\" class=\"textbtn\" data-action=\"toList\">Zurück zur Liste</button></div>";
+    }
+
+    html += "</section>";
+    render(html);
+  }
+
+  /* ---------- Ein einziger delegierter Klick-Handler für die gesamte Lebensdauer der Seite ---------- */
+  function onAppClick(ev){
+    var choice = ev.target.closest('[role="radio"]');
+    if(choice){
+      if(data.mode === "work"){
+        var name = choice.getAttribute("data-name");
+        var value = choice.getAttribute("data-value");
+        data.work[name] = value;
+        save();
+        renderWork();
+        var again = appEl.querySelector('[data-name="' + name + '"][data-value="' + value + '"]');
+        if(again) again.focus();
+      } else {
+        toggleRadio(choice);
+      }
+      return;
+    }
+
+    var action = ev.target.closest("[data-action]");
+    if(!action) return;
+    var act = action.getAttribute("data-action");
+
+    if(act === "delete"){
+      var id = action.getAttribute("data-id");
+      data.tasks = data.tasks.filter(function(t){ return t.id !== id; });
+      save();
+      refreshTaskListView();
+    } else if(act === "goAdd"){
+      data.listView = "add";
+      save();
+      renderList();
+    } else if(act === "goHome"){
+      data.listView = "home";
+      save();
+      renderList();
+    } else if(act === "startWork"){
+      data.mode = "work";
+      data.work = { step: "ask", category: data.work.category, taskId: null };
+      save();
+      renderWork();
+    } else if(act === "toCategory"){
+      data.work.step = "category";
+      save();
+      renderWork();
+    } else if(act === "backToAsk"){
+      data.work.step = "ask";
+      save();
+      renderWork();
+    } else if(act === "backToCategory"){
+      data.work.step = "category";
+      save();
+      renderWork();
+    } else if(act === "pick"){
+      if(!data.work.category) return;
+      var pool = matchingTasks(data.work.category);
+      if(pool.length === 0){
+        data.work.step = "empty";
+      } else {
+        var picked = pool[Math.floor(Math.random() * pool.length)];
+        data.work.taskId = picked.id;
+        data.work.step = "show";
+      }
+      save();
+      renderWork();
+    } else if(act === "done"){
+      data.tasks = data.tasks.filter(function(t){ return t.id !== data.work.taskId; });
+      data.work.step = "ask";
+      data.work.taskId = null;
+      save();
+      renderWork();
+    } else if(act === "skip"){
+      var rest = matchingTasks(data.work.category).filter(function(t){ return t.id !== data.work.taskId; });
+      if(rest.length === 0){
+        data.work.step = "empty";
+        data.work.taskId = null;
+      } else {
+        var next = rest[Math.floor(Math.random() * rest.length)];
+        data.work.taskId = next.id;
+      }
+      save();
+      renderWork();
+    } else if(act === "toList"){
+      data.mode = "list";
+      data.listView = "home";
+      save();
+      renderList();
+    }
+  }
+
+  /* ---------- Start ---------- */
+  appEl = document.getElementById("app");
+  appEl.addEventListener("click", onAppClick);
+
+  if(data.mode === "work"){
+    renderWork();
+  } else {
+    renderList();
+  }
+})();
+</script>
+</body>
+</html>
